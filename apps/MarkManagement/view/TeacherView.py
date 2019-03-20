@@ -19,8 +19,13 @@ class TeacherViewSet(viewsets.ViewSet):
     def logon(self, request):
         """
         Log on
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取注册信息
+        :return: JSON response. 包括code, message
+                1、如果必填注册信息有空，返回parameter_missed的JSON response
+                2、如果注册教师已存在，返回状态码4023以及其对应的信息
+                3、如果满足条件，尝试注册
+                    注册失败，返回insert_failed的JSON response
+                    注册成功，返回insert_succeed的JSON response
         """
         post_data =  request.data
         tid = post_data.get('tid')
@@ -40,6 +45,7 @@ class TeacherViewSet(viewsets.ViewSet):
         if teacher_set.exists():
             code_number = '4023'
             return JsonResponse({'code': code_number, 'message': status_code[code_number]}, safe=False)
+
         teacher = Teacher()
         teacher.tid = tid
         teacher.password = password
@@ -47,6 +53,7 @@ class TeacherViewSet(viewsets.ViewSet):
         teacher.name = name
         teacher.mobile = mobile
         teacher.email = email
+
         try:
             teacher.save()
         except Exception as e:
@@ -57,8 +64,12 @@ class TeacherViewSet(viewsets.ViewSet):
     def login(self, request):
         """
         Log in
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取登陆信息
+        :return: JSON response. 包括code, message, subjects(opt)
+                1、如果有参数为空，返回parameter_missed的JSON response
+                2、如果符合条件，尝试查询
+                    查询失败，登陆失败，数据库中没有用户信息，返回状态码4021以及对应的状态信息
+                    查询成功，登陆成功，为用户创建token，用于之后操作的token验证，subjects为token和teacher的id，状态码2000
         """
         post_data = request.data
         tid = post_data.get('tid')
@@ -67,6 +78,7 @@ class TeacherViewSet(viewsets.ViewSet):
             return parameter_missed()
 
         teacher_set = Teacher.objects.filter(tid=tid, password=password)
+
         if teacher_set.exists():
             access_token = Token()
             access_token.teacher = teacher_set[0]
@@ -85,10 +97,12 @@ class TeacherViewSet(viewsets.ViewSet):
     def logout(self, request):
         """
         Log out
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取token
+        :return: JSON response. 包括code, message
+                1、登出之后，尝试删除token
+                    删除失败，返回delete_failed的JSON response
+                    删除成功，返回delete_succeed的JSON response
         """
-        post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
 
         if access_token:
@@ -105,13 +119,18 @@ class TeacherViewSet(viewsets.ViewSet):
     def query(self, request):
         """
         Query t_Teacher table
-        :param request: the request from browser.
-        :return: JSON response.
+		:param request: the request from browser. 用来获取access_token和查询条件
+		:return: JSON response. 包括code, message, subjects(opt), count(opt)
+         		1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+         		2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+         		3、如果符合条件，尝试查询
+					查询失败，返回query_failed的JSON response
+					查询成功，返回JSON reponse包括code, message, subjects，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         tid = request.GET.get('tid')
         name = request.GET.get('name')
@@ -121,6 +140,7 @@ class TeacherViewSet(viewsets.ViewSet):
         is_manager = request.GET.get('is_manager')
         if id is None and name is None and tid is None and college_id is None and email is None and mobile is None and is_manager is None:
             return parameter_missed()
+
         teacher_set = Teacher.objects.all()
         if id:
             teacher_set = teacher_set.filter(id=id)
@@ -137,13 +157,17 @@ class TeacherViewSet(viewsets.ViewSet):
         if is_manager:
             teacher_set = teacher_set.filter(is_manager=is_manager)
 
-        teacher_set = teacher_set.values()
         result = []
+
+        teacher_set = teacher_set.values()
         for teacher in teacher_set:
+            # 不返回用户密码
             del teacher['password']
             result.append(teacher)
+
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -156,14 +180,20 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def get_user_full_message(self, request):
         """
-        Get user full message
+        Get user's message including t_Teacher, t_College, t_University table
         :param request: the request from browser.
-        :return: JSON response.
+		:return: JSON response. 包括code, message, subjects(opt), count(opt)
+         		1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+         		2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+         		3、如果符合条件，尝试查询
+					查询失败，返回query_failed的JSON response
+					查询成功，返回JSON reponse包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
 
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         tid = request.GET.get('tid')
         name = request.GET.get('name')
@@ -173,6 +203,7 @@ class TeacherViewSet(viewsets.ViewSet):
         is_manager = request.GET.get('is_manager')
         if id is None and name is None and tid is None and college_id is None and email is None and mobile is None and is_manager is None:
             return parameter_missed()
+
         teacher_set = Teacher.objects.all()
         if id:
             teacher_set = teacher_set.filter(id=id)
@@ -197,15 +228,19 @@ class TeacherViewSet(viewsets.ViewSet):
 
             dict_teacher['college_id'] = dict_teacher['college']
             del dict_teacher['college']
+            dict_teacher['college_message'] = dict_college
+
             dict_college['university_id'] = dict_college['university']
             del dict_college['university']
+            dict_teacher['university_message'] = dict_university
 
             del dict_teacher['password']
-            dict_teacher['college_message'] = dict_college
-            dict_teacher['university_message'] = dict_university
+
             result.append(dict_teacher)
+
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,

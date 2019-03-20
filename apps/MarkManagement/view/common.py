@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -9,17 +9,20 @@ Token is used to forbid illegal operations, such as input url to delete the data
 Here are operations:
            create_md5(pwd): 获取原始密码+salt的md5值
 token_verify(access_token): 验证token
-           token_invalid(): 4011 'Error, Bad token' & '错误，无效的token'
-    manager_check_failed(): 4027 'Error, No authorized permissions' & '错误，权限认证不通过'
-        parameter_missed(): 4023 'Error, Missing parameters' & '错误，参数缺失'
-           query_succeed(): 2000 'OK, with Response' & '成功，服务器已响应'
-            query_failed(): 4036 'Error, No Matching Query Data' & '错误，没有符合查询的数据'
-          insert_succeed(): 2001 'OK, Add new resource' & '成功，服务器添加新资源'
-           insert_failed(): 4037 'Error, Data Insert Failed' & '错误，数据插入失败'
-          update_succeed(): 2005 'OK, And need to Refresh' & '成功，资源需要被刷新'
-           update_failed(): 4038 'Error, Data Update Failed' & '错误，数据更新失败'
-          delete_succeed(): 2004 'OK, No Response content' & '成功，无响应内容'
-           delete_failed(): 4039 'Error, Data Delete Failed' & '错误，数据删除失败'
+           token_invalid(): "code": 4011, "message": 'Error, Bad token'                 or '错误，无效的token'
+    manager_check_failed(): "code": 4027, "message": 'Error, No authorized permissions' or '错误，权限认证不通过'
+        parameter_missed(): "code": 4023, "message": 'Error, Missing parameters'        or '错误，参数缺失'
+           query_succeed(): "code": 2000, "message": 'OK, with Response'                or '成功，服务器已响应'
+            query_failed(): "code": 4036, "message": 'Error, No Matching Query Data'    or '错误，没有符合查询的数据'
+          insert_succeed(): "code": 2001, "message": 'OK, Add new resource'             or '成功，服务器添加新资源'
+           insert_failed(): "code": 4037, "message": 'Error, Data Insert Failed'        or '错误，数据插入失败'
+          update_succeed(): "code": 2005, "message": 'OK, And need to Refresh'          or '成功，资源需要被刷新'
+           update_failed(): "code": 4038, "message": 'Error, Data Update Failed'        or '错误，数据更新失败'
+          delete_succeed(): "code": 2004, "message": 'OK, No Response content'          or '成功，无响应内容'
+           delete_failed(): "code": 4039, "message": 'Error, Data Delete Failed'        or '错误，数据删除失败'
+
+warning: 解析json、插入新值、更新新值、删除值时使用try
+warning: post, put, delete接受值用request.data
 """
 
 # system
@@ -158,12 +161,11 @@ else:
 
 current_semester = "2019年春季"
 
-# warning: 解析json、插入新值、更新新值、删除值时使用try
-# warning: post,put,delete接受值用request.data
-
 def create_md5(pwd):
     """
     获取原始密码 + salt的md5值
+    MD5的全称是Message-Digest Algorithm 5（信息-摘要算法），128位长度，目前MD5是一种不可逆算法。
+    hexdigest()目的是为了发现原始数据是否被人篡改过，因为摘要函数是一个单向函数，计算f(data)很容易，但通过digest反推data却非常困难。
     :param pwd: 原始密码
     :return:
     """
@@ -185,8 +187,8 @@ def create_md5(pwd):
 def token_verify(access_token):
     """
     验证token
-    :param access_token:
-    :return:
+    :param access_token: 获取到的token
+    :return: token是否有效
     """
     if access_token is None:
         return False
@@ -196,47 +198,81 @@ def token_verify(access_token):
         return False
     return True
 
-# 'Error, Bad token' & '错误，无效的token'
 def token_invalid():
+    """
+    'Error, Bad token' or '错误，无效的token'
+    :return: JSON response，携带无效token对应的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4011', 'message': status_code['4011']})
 
-# 'Error, No authorized permissions' & '错误，权限认证不通过'
 def manager_check_failed():
+    """
+    'Error, No authorized permissions' or '错误，权限认证不通过'
+    :return: JSON response，携带越权操作的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4027', 'message': status_code['4027']}, safe=False)
 
-# 'Error, Missing parameters' & '错误，参数缺失'
 def parameter_missed():
+    """
+    'Error, Missing parameters' or '错误，参数缺失'
+    :return: JSON response，携带参数缺失的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
 
-# 'OK, with Response' & '成功，服务器已响应'
 def query_succeed():
+    """
+    'OK, with Response' or '成功，服务器已响应'
+    :return: JSON response，携带查询成功的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '2000', 'message': status_code['2000']}, safe=False)
 
-# 'Error, No Matching Query Data' & '错误，没有符合查询的数据'
 def query_failed():
+    """
+    'Error, No Matching Query Data' or '错误，没有符合查询的数据'
+    :return: JSON response，携带查询失败的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4036', 'message': status_code['4036']}, safe=False)
 
-# 'OK, Add new resource' & '成功，服务器添加新资源'
 def insert_succeed():
+    """
+    'OK, Add new resource' or '成功，服务器添加新资源'
+    :return: JSON response，携带插入成功的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '2001', 'message': status_code['2001']}, safe=False)
 
-# 'Error, Data Insert Failed' & '错误，数据插入失败'
 def insert_failed():
+    """
+    'Error, Data Insert Failed' or '错误，数据插入失败'
+    :return: JSON response，携带数据插入失败的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4037', 'message': status_code['4037']}, safe=False)
 
-# 'OK, And need to Refresh' & '成功，资源需要被刷新'
 def update_succeed():
+    """
+    'OK, And need to Refresh' or '成功，资源需要被刷新'
+    :return: JSON response，携带更新成功的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '2005', 'message': status_code['2005']}, safe=False)
 
-# 'Error, Data Update Failed' & '错误，数据更新失败'
 def update_failed():
+    """
+    'Error, Data Update Failed' or '错误，数据更新失败'
+    :return: JSON response，携带更新失败的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4038', 'message': status_code['4038']}, safe=False)
 
-# 'OK, No Response content' & '成功，无响应内容'
 def delete_succeed():
+    """
+    'OK, No Response content' or '成功，无响应内容'
+    :return: JSON response，携带删除成功的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '2004', 'message': status_code['2004']}, safe=False)
 
-# 'Error, Data Delete Failed' & '错误，数据删除失败'
+
 def delete_failed():
+    """
+    'Error, Data Delete Failed' or '错误，数据删除失败'
+    :return: JSON response，携带删除失败的状态码以及对应状态信息
+    """
     return JsonResponse({'code': '4039', 'message': status_code['4039']}, safe=False)
 
