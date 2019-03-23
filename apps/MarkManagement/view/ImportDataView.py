@@ -16,8 +16,13 @@ class ImportDataViewSet(viewsets.ViewSet):
     def insert(self, request):
         """
         Insert the import data from the browser into database.
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取access_token和插入内容
+        :return: JSON response. 包括code, message, subjects(opt), count(opt)
+                1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                3、如果符合插入条件，尝试插入
+                    插入失败，返回insert_failed的JSON response
+                    插入成功，subjects会包括插入数据的信息，状态码2001
         """
         post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")

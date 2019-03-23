@@ -23,8 +23,8 @@ class CollegeViewSet(viewsets.ViewSet):
                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
                 2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
                 3、如果符合条件，尝试查询
-					查询失败，返回query_failed的JSON response
-					查询成功，返回JSON reponse包括code, message, subjects, count，状态码2000
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
 
         """
         access_token = request.META.get("HTTP_TOKEN")
@@ -80,11 +80,11 @@ class CollegeViewSet(viewsets.ViewSet):
         Query t_College table
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
-                1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
-                2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
-                3、如果符合条件，尝试查询
-			        查询失败，返回query_failed的JSON response
-			        查询成功，返回JSON reponse包括code, message, subjects，状态码2000
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试查询
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
 
@@ -130,13 +130,13 @@ class CollegeViewSet(viewsets.ViewSet):
     def insert(self, request):
         """
         Insert data into t_College table
-		:param request: the request from browser. 用来获取access_token和插入参数
-		:return: JSON response. 包括code, message, subjects(opt)
-         		1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
-         		2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
-         		3、如果符合插入条件，尝试插入
-            		插入失败，返回insert_failed的JSON response
-            		插入成功，返回JSON reponse包括code, message, subjects，状态码2001
+        :param request: the request from browser. 用来获取access_token和插入参数
+        :return: JSON response. 包括code, message, subjects(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试插入
+                    插入失败，返回insert_failed的JSON response
+                    插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
@@ -186,13 +186,13 @@ class CollegeViewSet(viewsets.ViewSet):
     def update(self, request):
         """
         Update t_College table
-		:param request: the request from browser. 用来获取access_token和更新条件
-		:return: JSON response. 包括code, message, subjects(opt)
- 		        1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
- 		        2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
- 		        3、如果符合更新条件，尝试更新
-					更新失败，返回update_failed的JSON response
-            		更新成功，返回JSON reponse包括code, message, subjects，状态码2005
+        :param request: the request from browser. 用来获取access_token和更新条件
+        :return: JSON response. 包括code, message, subjects(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试更新
+                    更新失败，返回update_failed的JSON response
+                    更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
@@ -243,13 +243,13 @@ class CollegeViewSet(viewsets.ViewSet):
     def remove(self, request):
         """
         Remove data from t_College table
-		:param request: the request from browser. 用来获取access_token和删除条件
-		:return: JSON response. 包括code, message
-		         1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
-		         2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
-		         3、如果符合更新条件，尝试删除
-		            删除失败，返回delete_failed的JSON response
-		            删除成功，返回delete_succeed的JSON response
+        :param request: the request from browser. 用来获取access_token和删除条件
+        :return: JSON response. 包括code, message
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试删除
+                    删除失败，返回delete_failed的JSON response
+                    删除成功，返回delete_succeed的JSON response
         """
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):

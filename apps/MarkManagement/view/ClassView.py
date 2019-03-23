@@ -8,7 +8,6 @@ Here are operations:
 query_wrapper: POST   http://localhost:8000/api/v1/table/class_field/wrapper
         query: GET    http://localhost:8000/api/v1/table/class_field/format
        insert: POST   http://localhost:8000/api/v1/table/class_field/format
-       update:
        remove: DELETE http://localhost:8000/api/v1/table/class_field/format
 """
 
@@ -19,8 +18,13 @@ class ClassViewSet(viewsets.ViewSet):
     def query_wrapper(self, request):
         """
         Query wrapper t_Class table
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取access_token
+        :return: JSON response. 包括code, message, subjects(opt), count(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试查询
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
@@ -66,8 +70,13 @@ class ClassViewSet(viewsets.ViewSet):
     def query(self, request):
         """
         Query t_Class table
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取access_token和查询条件
+        :return: JSON response. 包括code, message, subjects(opt), count(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试查询
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
 
@@ -79,7 +88,7 @@ class ClassViewSet(viewsets.ViewSet):
         #sid = request.GET.get('sid')
         #sname = request.GET.get('sname')
         classInfo_id = request.GET.get('classInfo_id')
-        if id  is None and student_id is None and classInfo_id is None:
+        if id is None and student_id is None and classInfo_id is None:
             return parameter_missed()
         class_set = Class.objects.all()
         if id is not None:
@@ -107,8 +116,13 @@ class ClassViewSet(viewsets.ViewSet):
     def insert(self, request):
         """
         Insert t_Class table
-        :param request: the request from browser.
-        :return: JSON respons.
+        :param request: the request from browser. 用来获取access_token和插入参数
+        :return: JSON response. 包括code, message, subjects(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试插入
+                    插入失败，返回insert_failed的JSON response
+                    插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
         post_data =  request.data
         access_token = request.META.get("HTTP_TOKEN")
@@ -160,8 +174,13 @@ class ClassViewSet(viewsets.ViewSet):
     def remove(self, request):
         """
         Remove t_Class table
-        :param request: the request from browser.
-        :return: JSON response.
+        :param request: the request from browser. 用来获取access_token和删除条件
+        :return: JSON response. 包括code, message
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试删除
+                    删除失败，返回delete_failed的JSON response
+                    删除成功，返回delete_succeed的JSON response
         """
         delete_data = request.data
         access_token = request.META.get("HTTP_TOKEN")

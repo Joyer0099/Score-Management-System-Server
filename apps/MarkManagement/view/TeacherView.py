@@ -119,13 +119,13 @@ class TeacherViewSet(viewsets.ViewSet):
     def query(self, request):
         """
         Query t_Teacher table
-		:param request: the request from browser. 用来获取access_token和查询条件
-		:return: JSON response. 包括code, message, subjects(opt), count(opt)
-         		1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
-         		2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
-         		3、如果符合条件，尝试查询
-					查询失败，返回query_failed的JSON response
-					查询成功，返回JSON reponse包括code, message, subjects，状态码2000
+        :param request: the request from browser. 用来获取access_token和查询条件
+        :return: JSON response. 包括code, message, subjects(opt), count(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试查询
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
@@ -182,12 +182,12 @@ class TeacherViewSet(viewsets.ViewSet):
         """
         Get user's message including t_Teacher, t_College, t_University table
         :param request: the request from browser.
-		:return: JSON response. 包括code, message, subjects(opt), count(opt)
-         		1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
-         		2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
-         		3、如果符合条件，尝试查询
-					查询失败，返回query_failed的JSON response
-					查询成功，返回JSON reponse包括code, message, subjects, count，状态码2000
+        :return: JSON response. 包括code, message, subjects(opt), count(opt)
+                1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
+                3、如果符合条件，尝试查询
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
 

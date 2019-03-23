@@ -23,8 +23,8 @@ class UniversityViewSet(viewsets.ViewSet):
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
                  2、如果所有参数为空，即Params中没有内容，返回parameter_missed的JSON response
                  3、如果符合条件，尝试查询
-                 查询失败，返回query_failed的JSON response
-                 查询成功，返回JSON reponse包括code, message, subjects, count，状态码2000
+                    查询失败，返回query_failed的JSON response
+                    查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         # 获取token
         access_token = request.META.get("HTTP_TOKEN")
@@ -85,7 +85,7 @@ class UniversityViewSet(viewsets.ViewSet):
                  2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
                  3、如果符合条件，尝试插入
                     插入失败，返回insert_failed的JSON response
-                    插入成功，返回JSON reponse包括code, message, subjects，状态码2001
+                    插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
         # 获取并验证token
         access_token = request.META.get("HTTP_TOKEN")
