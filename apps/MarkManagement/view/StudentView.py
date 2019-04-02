@@ -28,9 +28,9 @@ class StudentViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         sid = request.GET.get('sid')
         name = request.GET.get('name')
@@ -38,9 +38,12 @@ class StudentViewSet(viewsets.ViewSet):
         year = request.GET.get('year')
         classInfo_id = request.GET.get('classInfo_id')
         college_id = request.GET.get('college_id')
+
         result = []
+
         if classInfo_id is not None:
             student_set = Student.objects.filter(class__classInfo_id=classInfo_id)
+
             for student in student_set:
                 student_dict = model_to_dict(student)
                 student_dict['major_id'] = student_dict['major']
@@ -57,9 +60,11 @@ class StudentViewSet(viewsets.ViewSet):
                 college_dict['university_id'] = college_dict['university']
                 del college_dict['university']
                 student_dict['college_message'] = college_dict
+
                 result.append(student_dict)
         else:
-            if id is None and sid is None and major_id is None and year is None and name is None and college_id is None:
+            if id is None and sid is None and major_id is None \
+                    and year is None and name is None and college_id is None:
                 return parameter_missed()
 
             student_set = Student.objects.all()
@@ -75,6 +80,7 @@ class StudentViewSet(viewsets.ViewSet):
                 student_set = student_set.filter(year=year)
             if college_id:
                 student_set = student_set.filter(major__college__id=college_id)
+
             for student in student_set:
                 student_dict = model_to_dict(student)
                 student_dict['major_id'] = student_dict['major']
@@ -85,8 +91,6 @@ class StudentViewSet(viewsets.ViewSet):
                 del major_dict['college']
                 student_dict['major_message'] = major_dict
 
-
-
                 college_dict = model_to_dict(student.major.college)
                 college_dict['university_id'] = college_dict['university']
                 del college_dict['university']
@@ -96,6 +100,7 @@ class StudentViewSet(viewsets.ViewSet):
 
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -118,9 +123,9 @@ class StudentViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         sid = request.GET.get('sid')
         name = request.GET.get('name')
@@ -128,15 +133,19 @@ class StudentViewSet(viewsets.ViewSet):
         year = request.GET.get('year')
         classInfo_id = request.GET.get('classInfo_id')
         college_id = request.GET.get('college_id')
+
         result = []
+
         if classInfo_id is not None:
             student_set = Student.objects.filter(class__classInfo_id=classInfo_id)
             student_set = student_set.values()
             for student in student_set:
                 result.append(student)
         else:
-            if id is None and sid is None and major_id is None and year is None and name is None and college_id is None:
+            if id is None and sid is None and major_id is None \
+                    and year is None and name is None and college_id is None:
                 return parameter_missed()
+
             student_set = Student.objects.all()
             if id is not None:
                 student_set = student_set.filter(id=id)
@@ -151,11 +160,13 @@ class StudentViewSet(viewsets.ViewSet):
             if college_id:
                 student_set = student_set.filter(major__college__id=college_id)
             student_set = student_set.values()
+
             for student in student_set:
                 result.append(student)
 
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -177,13 +188,16 @@ class StudentViewSet(viewsets.ViewSet):
                     插入失败，返回insert_failed的JSON response
                     插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
-        post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        post_data = request.data
         subjects = post_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         succeed_ids = []
         failed_sids = []
@@ -195,15 +209,20 @@ class StudentViewSet(viewsets.ViewSet):
             name = subjectDict.get('name')
             major_id = subjectDict.get('major_id')
             year = subjectDict.get('year')
+
             if sid is None or name is None or major_id is None:
                 continue
+
             student = Student()
             if sid is not None:
                 student_set = Student.objects.filter(sid=sid)
+
                 if student_set.exists():
                     repeated_ids.append({"id":student_set[0].id})
                     continue
+
                 student.sid = sid
+
             if name is not None:
                 student.name = name
             if major_id is not None:
@@ -213,22 +232,28 @@ class StudentViewSet(viewsets.ViewSet):
 
             try:
                 student.save()
+                succeed_ids.append({'id':student.id})
+                tag = True
             # except IntegrityError:
             #     print("exist")
             except Exception:
-                failed_sids.append({"sid":sid})
-            else:
-                succeed_ids.append({'id':student.id})
-                tag = True
+                failed_sids.append({"sid": sid})
+
         subjects = {
             "succeed_ids": succeed_ids,
             "failed_sids": failed_sids,
             "repeated_ids": repeated_ids
         }
         if tag:
-            return JsonResponse({'subjects':subjects, 'code': '2001', 'message': status_code['2001']}, safe=False)
+            return JsonResponse(
+                {'subjects': subjects,
+                 'code': '2001',
+                 'message': status_code['2001']}, safe=False)
         else:
-            return JsonResponse({'subjects':subjects,'code': '4037', 'message': status_code['4037']}, safe=False)
+            return JsonResponse(
+                {'subjects': subjects,
+                 'code': '4037',
+                 'message': status_code['4037']}, safe=False)
 
     def update(self, request):
         """
@@ -241,15 +266,19 @@ class StudentViewSet(viewsets.ViewSet):
                     更新失败，返回update_failed的JSON response
                     更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
-        put_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        put_data = request.data
         subjects = put_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             name = subjectDict.get('name')
@@ -257,6 +286,7 @@ class StudentViewSet(viewsets.ViewSet):
             major_id = subjectDict.get('major_id')
             year = subjectDict.get('year')
             student_set = Student.objects.filter(id=id)
+
             for student in student_set:
                 if name:
                     student.name = name
@@ -266,15 +296,19 @@ class StudentViewSet(viewsets.ViewSet):
                     student.major_id = major_id
                 if year:
                     student.year = year
+
                 try:
                     student.save()
-                except Exception as e:
-                    continue
-                else:
                     ids.append({'id': student.id})
                     tag = True
+                except Exception as e:
+                    continue
+
         if tag:
-            return JsonResponse({'subjects': ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+            return JsonResponse(
+                {'subjects': ids,
+                 'code': '2005',
+                 'message': status_code['2005']}, safe=False)
         else:
             return update_failed()
 
@@ -289,28 +323,35 @@ class StudentViewSet(viewsets.ViewSet):
                     删除失败，返回delete_failed的JSON response
                     删除成功，返回delete_succeed的JSON response
         """
-        delete_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
+        delete_data = request.data
         subjects = delete_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
+
             if id is None:
                 continue
+
             student_set = Student.objects.filter(id=id)
+
             if not student_set.exists():
                 continue
+
             try:
                 student_set.delete()
+                tag = True
             except Exception as e:
                 continue
-            else:
-                tag = True
+
         if tag:
             return delete_succeed()
         else:

@@ -93,6 +93,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
         if not token_verify(access_token) :
             return token_invalid()
+
         id = request.GET.get('id')
         name = request.GET.get('name')
         cid = request.GET.get('cid')
@@ -102,7 +103,8 @@ class ClassInfoViewSet(viewsets.ViewSet):
         week = request.GET.get('week')
         room = request.GET.get('room')
 
-        if id is None and name is None and cid is None and teacher_id is None and semester is None and week is None and room is None and lesson_id is None:
+        if id is None and name is None and cid is None and teacher_id is None \
+                and semester is None and week is None and room is None and lesson_id is None:
             return JsonResponse({"code": '4032', "message": status_code['4032']})
 
         # 此处待优化,all()
@@ -143,8 +145,13 @@ class ClassInfoViewSet(viewsets.ViewSet):
             classInfo_dict['current_semester'] = current_semester
 
             result.append(classInfo_dict)
+
         if len(result) == 0:
-            return JsonResponse({'current_semester':current_semester,'code': '4036', 'message': status_code['4036']}, safe=False)
+            return JsonResponse(
+                {'current_semester':current_semester,
+                 'code': '4036',
+                 'message': status_code['4036']}, safe=False)
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -168,9 +175,9 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token) :
             return token_invalid()
+
         id = request.GET.get('id')
         name = request.GET.get('name')
         cid = request.GET.get('cid')
@@ -180,7 +187,8 @@ class ClassInfoViewSet(viewsets.ViewSet):
         week = request.GET.get('week')
         room = request.GET.get('room')
 
-        if id is None and name is None and cid is None and teacher_id is None and semester is None and week is None and room is None and lesson_id is None:
+        if id is None and name is None and cid is None and teacher_id is None \
+                and semester is None and week is None and room is None and lesson_id is None:
             return JsonResponse({"code": '4032', "message": status_code['4032']})
 
         # 此处待优化,all()
@@ -207,8 +215,13 @@ class ClassInfoViewSet(viewsets.ViewSet):
         for classInfo in classInfo_set:
             classInfo['current_semester'] = current_semester
             result.append(classInfo)
+
         if len(result) == 0:
-            return JsonResponse({'current_semester':current_semester,'code': '4036', 'message': status_code['4036']}, safe=False)
+            return JsonResponse(
+                {'current_semester':current_semester,
+                 'code': '4036',
+                 'message': status_code['4036']}, safe=False)
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -230,17 +243,20 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     插入失败，返回insert_failed的JSON response
                     插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
-        post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
-        if not token_verify(access_token) :
+        if not token_verify(access_token):
             return token_invalid()
+
+        post_data = request.data
         subjects = post_data.get('subjects')
+
         if subjects is None:
             return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
+
         # 传入参数为字典数组
         tag = False
         insertID = []
+
         for subjectsDict in subjects:
             name = subjectsDict.get('name',None)
             teacher_id = subjectsDict.get('teacher_id',None)
@@ -248,8 +264,10 @@ class ClassInfoViewSet(viewsets.ViewSet):
             week = subjectsDict.get('week',None)
             room = subjectsDict.get('room',None)
             lesson_id = subjectsDict.get('lesson_id',None)
+
             if name is None or teacher_id is None or lesson_id is None:
                 continue
+
             classInfo = ClassInfo()
             if name is not None:
                 classInfo.name = name
@@ -263,13 +281,14 @@ class ClassInfoViewSet(viewsets.ViewSet):
                 classInfo.week = week
             if room is not None:
                 classInfo.room = room
+
             try:
                 classInfo.save()
+                insertID.append({'id': classInfo.id})
+                tag = True
             except Exception as e:
                 continue
-            else:
-                insertID.append({'id':classInfo.id})
-                tag = True
+
         if tag:
             result = {
                 'subjects': insertID,
@@ -291,15 +310,19 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     更新失败，返回update_failed的JSON response
                     更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
-        put_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token) :
             return token_invalid()
+
+        put_data = request.data
         subjects = put_data.get('subjects')
+
         if subjects is None:
             return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             name = subjectDict.get('name')
@@ -308,8 +331,10 @@ class ClassInfoViewSet(viewsets.ViewSet):
             semester = subjectDict.get('semester')
             week = subjectDict.get('week')
             room = subjectDict.get('room')
+
             if id is None and name is None and teacher_id is None and semester is None and week is None:
                 continue
+
             classInfo_set = ClassInfo.objects.filter(id=id)
             for classInfo in classInfo_set:
                 if name:
@@ -324,15 +349,19 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     classInfo.week = week
                 if room:
                     classInfo.room = room
+
                 try:
                     classInfo.save()
-                except Exception as e:
-                    continue
-                else:
                     ids.append({'id': id})
                     tag = True
+                except Exception as e:
+                    continue
+
         if tag:
-            return JsonResponse({'subjects': ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+            return JsonResponse(
+                {'subjects': ids,
+                 'code': '2005',
+                 'message': status_code['2005']}, safe=False)
         else:
             return update_failed()
 
@@ -347,15 +376,18 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     删除失败，返回delete_failed的JSON response
                     删除成功，返回delete_succeed的JSON response
         """
-        delete_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
-        if not token_verify(access_token) :
+        if not token_verify(access_token):
             return token_invalid()
+
+        delete_data = request.data
         subjects = delete_data.get('subjects')
+
         if subjects is None:
             return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
+
         tag = False
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             if id is None:
@@ -363,12 +395,12 @@ class ClassInfoViewSet(viewsets.ViewSet):
             classInfo_set = ClassInfo.objects.filter(id=id)
             if not classInfo_set.exists():
                 continue
+
             try:
                 classInfo_set.delete()
+                tag = True
             except Exception as e:
                 continue
-            else:
-                tag = True
 
         if tag:
             return delete_succeed()
