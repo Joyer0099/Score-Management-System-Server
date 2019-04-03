@@ -98,7 +98,7 @@ urlpath = [
     # re_path(r'^semester/$',views.)
 
     # analyze
-    re_path(r'^name/', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
-    re_path(r'^list/', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
-    re_path(r'^all/', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
+    re_path(r'^student/name/', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
+    re_path(r'^score/', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
+    re_path(r'^score/all/', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
 ]
