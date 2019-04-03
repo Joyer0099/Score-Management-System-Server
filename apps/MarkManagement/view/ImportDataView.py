@@ -24,18 +24,17 @@ class ImportDataViewSet(viewsets.ViewSet):
                     插入失败，返回insert_failed的JSON response
                     插入成功，subjects会包括插入数据的信息，状态码2001
         """
-        post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
+        post_data = request.data
         result = {}
         error_title_message = []
         exist_title_message = []
 
         exist_point_message = []
         error_point_message = []
-
 
         succeed_title_message = []
         succeed_point_message = []
@@ -45,8 +44,7 @@ class ImportDataViewSet(viewsets.ViewSet):
         lesson_id = post_data.get('lesson_id')
         sid_list = post_data.get('sid_list')
 
-        #1.拿到所有的classInfo_id
-
+        # 1.拿到所有的classInfo_id
         classInfo_id_set = set()
         for sid in sid_list:
             classInfo_set = ClassInfo.objects.filter(Q(lesson_id=lesson_id) & Q(class__student__sid=sid))
@@ -55,14 +53,16 @@ class ImportDataViewSet(viewsets.ViewSet):
 
         if len(classInfo_id_set) == 0:
             return insert_failed()
-        #2.插入列
+
+        # 2.插入Title
         for classInfo_id in classInfo_id_set:
             for title_message in title_list:
                 title_name = title_message['name']
                 titleGroup_id = title_message['titleGroup_id']
-                title_set = Title.objects.filter(Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
+                title_set = Title.objects.filter(
+                    Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
                 if title_set.exists():
-                    exist_title_message.append({'name':title_set[0].name})
+                    exist_title_message.append({'name': title_set[0].name})
                     print("already exists")
                     continue
                 new_title = Title()
@@ -72,13 +72,9 @@ class ImportDataViewSet(viewsets.ViewSet):
                 new_title.weight = title_message['weight']
                 try:
                     new_title.save()
-                except Exception as e:
-                    error_title_message.append({'name':title_name})
-                else:
                     titleDict = model_to_dict(new_title)
 
                     titleGroup_dict = model_to_dict(new_title.titleGroup)
-
                     titleDict['titleGroup_id'] = titleDict['titleGroup']
                     del titleDict['titleGroup']
 
@@ -91,28 +87,37 @@ class ImportDataViewSet(viewsets.ViewSet):
 
                     succeed_title_message.append(titleDict)
                     print(new_title.id)
-        #3.插入分数
+                except Exception as e:
+                    error_title_message.append({'name': title_name})
+
+        # 3.插入分数
         for point_message in point_list:
             sid = point_message['sid']
             title_name = point_message['title_name']
             titleGroup_id = point_message['titleGroup_id']
-            #3.1拿到classInfo_id
+
+            # 3.1拿到classInfo_id
+            # 此处classInfo_set实际只有一个值
             classInfo_set = ClassInfo.objects.filter(Q(lesson_id=lesson_id) & Q(class__student__sid=sid))
-            if classInfo_set.exists() == False:
+            if not classInfo_set.exists():
                 error_point_message.append(point_message)
                 continue
-            #此处classInfo_set实际只有一个值，
 
             classInfo_id = classInfo_set[0].id
-            title_set = Title.objects.filter(Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
-            if title_set.exists() == False:
+            title_set = Title.objects.filter(
+                Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
+
+            if not title_set.exists():
                 continue
+
             title_id = title_set[0].id
 
             pointNumber = point_message['pointNumber']
 
             student_set = Student.objects.filter(sid=sid)
-            point_set = Point.objects.filter(Q(classInfo_id=classInfo_id) & Q(title_id=title_id) & Q(student_id=student_set[0].id))
+            point_set = Point.objects.filter(
+                Q(classInfo_id=classInfo_id) & Q(title_id=title_id) & Q(student_id=student_set[0].id))
+
             if point_set.exists():
                 point = point_set[0]
                 point.pointNumber = pointNumber
@@ -120,17 +125,16 @@ class ImportDataViewSet(viewsets.ViewSet):
                 print(point.id)
                 exist_point_message.append(point_message)
                 continue
+
             point = Point()
             point.title_id = title_id
             point.pointNumber = pointNumber
             point.classInfo_id = classInfo_id
             point.student_id = student_set[0].id
+
             try:
                 point.save()
-            except Exception as e:
-                error_point_message.append(point_message)
-                continue
-            else:
+
                 pointDict = model_to_dict(point)
 
                 student_dict = model_to_dict(point.student)
@@ -151,6 +155,9 @@ class ImportDataViewSet(viewsets.ViewSet):
                 pointDict['classInfo_message'] = classInfo_dict
 
                 succeed_point_message.append(pointDict)
+            except Exception as e:
+                error_point_message.append(point_message)
+                continue
 
         result['succeed_point_message'] = succeed_point_message
         result['succeed_title_message'] = succeed_title_message

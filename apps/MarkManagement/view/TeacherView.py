@@ -27,13 +27,13 @@ class TeacherViewSet(viewsets.ViewSet):
                     注册失败，返回insert_failed的JSON response
                     注册成功，返回insert_succeed的JSON response
         """
-        post_data =  request.data
+        post_data = request.data
         tid = post_data.get('tid')
         password = post_data.get('password')
         college_id = post_data.get('college_id')
         name = post_data.get('name')
-        email = post_data.get('email','')
-        mobile = post_data.get('mobile','')
+        email = post_data.get('email', '')
+        mobile = post_data.get('mobile', '')
 
         if password is None or college_id is None or tid is None or name is None:
             return parameter_missed()
@@ -58,8 +58,8 @@ class TeacherViewSet(viewsets.ViewSet):
             teacher.save()
         except Exception as e:
             return insert_failed()
-        else:
-            return insert_succeed()
+
+        return insert_succeed()
 
     def login(self, request):
         """
@@ -89,7 +89,10 @@ class TeacherViewSet(viewsets.ViewSet):
                 'id': access_token.teacher.id
             }
             code_number = '2000'
-            return JsonResponse({'code': code_number, 'message': status_code[code_number], 'subjects': subjects}, safe=False)
+            return JsonResponse(
+                {'code': code_number,
+                 'message': status_code[code_number],
+                 'subjects': subjects}, safe=False)
         else:
             code_number = '4021'
             return JsonResponse({'code': code_number, 'message': status_code[code_number]}, safe=False)
@@ -104,17 +107,14 @@ class TeacherViewSet(viewsets.ViewSet):
                     删除成功，返回delete_succeed的JSON response
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if access_token:
             # 删除token
             try:
                 Token.objects.filter(token_text=access_token).delete()
+                return delete_succeed()
             except Exception as e:
                 return delete_failed()
-            else:
-                return delete_succeed()
-        else:
-            return delete_failed()
+        return delete_failed()
 
     def query(self, request):
         """
@@ -138,7 +138,9 @@ class TeacherViewSet(viewsets.ViewSet):
         email = request.GET.get('email')
         mobile = request.GET.get('mobile')
         is_manager = request.GET.get('is_manager')
-        if id is None and name is None and tid is None and college_id is None and email is None and mobile is None and is_manager is None:
+
+        if id is None and name is None and tid is None and college_id is None and \
+                email is None and mobile is None and is_manager is None:
             return parameter_missed()
 
         teacher_set = Teacher.objects.all()
@@ -201,7 +203,9 @@ class TeacherViewSet(viewsets.ViewSet):
         email = request.GET.get('email')
         mobile = request.GET.get('mobile')
         is_manager = request.GET.get('is_manager')
-        if id is None and name is None and tid is None and college_id is None and email is None and mobile is None and is_manager is None:
+
+        if id is None and name is None and tid is None and college_id is None and \
+                email is None and mobile is None and is_manager is None:
             return parameter_missed()
 
         teacher_set = Teacher.objects.all()
