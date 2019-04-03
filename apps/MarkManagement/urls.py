@@ -93,13 +93,12 @@ urlpath = [
                                                                     'post': 'insert',
                                                                     'put': 'update',
                                                                     'delete': 'remove'})),
-    re_path(r'^import_data', views.ImportDataViewSet.as_view({'post': 'insert'}))
+    re_path(r'^import_data', views.ImportDataViewSet.as_view({'post': 'insert'})),
     # semester
     # re_path(r'^semester/$',views.)
 
-
-
-
-
-
+    # analyze
+    re_path(r'^name/', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
+    re_path(r'^list/', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
+    re_path(r'^all/', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
 ]

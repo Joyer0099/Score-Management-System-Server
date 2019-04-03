@@ -14,3 +14,4 @@ from apps.MarkManagement.view.TitleGroupVIew import *
 from apps.MarkManagement.view.TitleView import *
 from apps.MarkManagement.view.UniversityView import *
 from apps.MarkManagement.view.ImportDataView import *
+from apps.MarkManagement.view.AnalyseView import *
