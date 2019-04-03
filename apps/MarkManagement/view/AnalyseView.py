@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+This file is for the data analysis of student's scores
+
+            AnalyseViewSet: According student's id list to get the student's name
+                            GET http://localhost:8000/api/v1/student/name
+  getScoreListMapBySidList: According student's id list to get a map including
+                            学号，期中客观分，期中主观分，期中总分，期末客观分，期末主观分，期末总分
+                            GET http://localhost:8000/api/v1/score/
+              getAllScores: According semester to get a map including
+                            期中词汇分，期中听力分，期中翻译分，期中写作分，期中细节分，期中主观分，期末客观分，期末主观分，学位总分
+                            GET http://localhost:8000/api/v1/score/all
+"""
 from __future__ import division
 
 from django.shortcuts import render
@@ -29,7 +41,7 @@ class AnalyseViewSet(viewsets.ViewSet):
 
     def getScoreListMapBySidList(self, request):
         #   map={
-        #   'sid':'2019001',        //学号
+        #   'sid':'2019001',      //学号
         #   'score_zk':70,        //期中客观分
         #   'score_zz':18,        //期中主观分
         #   'score_zs':88,        //期中总分
@@ -50,6 +62,7 @@ class AnalyseViewSet(viewsets.ViewSet):
             point_dict['classInfo_id'] = point_dict['classInfo']
 
             student_dict = model_to_dict(point.student)
+            point_dict['sid'] = student_dict['sid']
             point_dict['syear'] = student_dict['year']
 
             title_dict = model_to_dict(point.title)
