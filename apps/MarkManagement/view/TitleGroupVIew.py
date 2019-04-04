@@ -26,15 +26,17 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         name = request.GET.get('name')
         lesson_id = request.GET.get('lesson_id')
         weight = request.GET.get('weight')
+
         if id is None and name is None and lesson_id is None and weight is None:
             return parameter_missed()
+
         titleGroup_set = TitleGroup.objects.all()
         if id is not None:
             titleGroup_set = titleGroup_set.filter(id=id)
@@ -44,13 +46,17 @@ class TitleGroupViewSet(viewsets.ViewSet):
             titleGroup_set = titleGroup_set.filter(lesson_id=lesson_id)
         if weight is not None:
             titleGroup_set = titleGroup_set.filter(weight=weight)
+
         # 对象取字典
         titleGroup_set = titleGroup_set.values()
+
         result = []
         for titleGroup in titleGroup_set:
             result.append(titleGroup)
+
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -71,21 +77,26 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     插入失败，返回insert_failed的JSON response
                     插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
-        post_data =  request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        post_data = request.data
         subjects = post_data.get('subjects')
         if subjects is None:
             return parameter_missed()
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             name = subjectDict.get('name')
             weight = subjectDict.get('weight')
             lesson_id = subjectDict.get('lesson_id')
+
             if name is None or lesson_id is None:
                 continue
+
             titleGroup = TitleGroup()
             if name:
                 titleGroup.name = name
@@ -96,15 +107,16 @@ class TitleGroupViewSet(viewsets.ViewSet):
                 if not lesson_set.exists():
                     continue
                 titleGroup.lesson = lesson_set[0]
+
             try:
                 titleGroup.save()
-            except Exception as e:
-                continue
-            else:
                 ids.append({'id': titleGroup.id})
                 tag = True
+            except Exception as e:
+                continue
+
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
         else:
             return insert_failed()
 
@@ -119,21 +131,26 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     更新失败，返回update_failed的JSON response
                     更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
-        put_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        put_data = request.data
         subjects = put_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             name = subjectDict.get('name')
             weight = subjectDict.get('weight')
             lesson_id = subjectDict.get('lesson_id')
             titleGroup_set = TitleGroup.objects.filter(id=id)
+
             for titleGroup in titleGroup_set:
                 if name:
                     titleGroup.name = name
@@ -146,11 +163,11 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     titleGroup.lesson = lesson_set[0]
                 try:
                     titleGroup.save()
-                except Exception as e:
-                    continue
-                else:
                     ids.append({'id': titleGroup.id})
                     tag = True
+                except Exception as e:
+                    continue
+
         if tag:
             return JsonResponse({'subjects':ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
         else:
@@ -167,28 +184,32 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     删除失败，返回delete_failed的JSON response
                     删除成功，返回delete_succeed的JSON response
         """
-        delete_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
+        delete_data = request.data
         subjects = delete_data.get('subjects')
+
         if subjects is None:
             return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
+
         tag = False
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             if id is None:
                 continue
             titleGroup_set = TitleGroup.objects.filter(id=id)
+
             if not titleGroup_set.exists():
                 continue
+
             try:
                 titleGroup_set.delete()
+                tag = True
             except Exception as e:
                 continue
-            else:
-                tag = True
 
         if tag:
             return delete_succeed()

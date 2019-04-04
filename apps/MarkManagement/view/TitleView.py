@@ -30,13 +30,16 @@ class TitleViewSet(viewsets.ViewSet):
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         name = request.GET.get('name')
         type = request.GET.get('type')
         titleGroup_id = request.GET.get('titleGroup_id')
         classInfo_id = request.GET.get('classInfo_id')
+
         if id is None and name is None and type is None and titleGroup_id is None and classInfo_id is None:
             return parameter_missed()
+
         title_set = Title.objects.all()
         if id is not None:
             title_set = title_set.filter(id=id)
@@ -69,6 +72,7 @@ class TitleViewSet(viewsets.ViewSet):
 
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -90,16 +94,18 @@ class TitleViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
         id = request.GET.get('id')
         name = request.GET.get('name')
         type = request.GET.get('type')
         titleGroup_id = request.GET.get('titleGroup_id')
         classInfo_id = request.GET.get('classInfo_id')
+
         if id is None and name is None  and type is None and titleGroup_id is None and classInfo_id is None:
             return parameter_missed()
+
         title_set = Title.objects.all()
         if id is not None:
             title_set = title_set.filter(id=id)
@@ -117,8 +123,10 @@ class TitleViewSet(viewsets.ViewSet):
         result = []
         for title in title_set:
             result.append(title)
+
         if len(result) == 0:
             return query_failed()
+
         code_number = '2000'
         result = {
             'code': code_number,
@@ -126,7 +134,6 @@ class TitleViewSet(viewsets.ViewSet):
             'subjects': result,
             'count': len(result),
         }
-
         return JsonResponse(result, safe=False)
 
     def insert(self, request):
@@ -140,22 +147,28 @@ class TitleViewSet(viewsets.ViewSet):
                     插入失败，返回insert_failed的JSON response
                     插入成功，返回JSON response包括code, message, subjects，状态码2001
         """
-        post_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        post_data = request.data
         subjects = post_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             name = subjectDict.get('name')
             weight = subjectDict.get('weight')
             titleGroup_id = subjectDict.get('titleGroup_id')
             classInfo_id = subjectDict.get('classInfo_id')
+
             if name is None or titleGroup_id is None or classInfo_id is None:
                 continue
+
             title = Title()
             if name:
                 title.name = name
@@ -163,23 +176,26 @@ class TitleViewSet(viewsets.ViewSet):
                 title.weight = weight
             if titleGroup_id:
                 titleGroup_set = TitleGroup.objects.filter(id=titleGroup_id)
+
                 if not titleGroup_set.exists():
                     continue
+
                 title.titleGroup = titleGroup_set[0]
             if classInfo_id:
                 classInfo_set = ClassInfo.objects.filter(id=classInfo_id)
+
                 if not classInfo_set.exists():
                     continue
+
                 title.classInfo = classInfo_set[0]
             try:
                 title.save()
-            except Exception as e:
-                continue
-            else:
                 ids.append({'id': title.id})
                 tag = True
-        if tag:
+            except Exception as e:
+                continue
 
+        if tag:
             return JsonResponse({'subjects':ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
         else:
             return insert_failed()
@@ -195,15 +211,19 @@ class TitleViewSet(viewsets.ViewSet):
                     更新失败，返回update_failed的JSON response
                     更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
-        put_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
         if not token_verify(access_token):
             return token_invalid()
+
+        put_data = request.data
         subjects = put_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         ids = []
+
         for subjectDict in subjects:
             id = subjectDict.get('id')
             name = subjectDict.get('name')
@@ -211,6 +231,7 @@ class TitleViewSet(viewsets.ViewSet):
             titleGroup_id = subjectDict.get('titleGroup_id')
             classInfo_id = subjectDict.get('classInfo_id')
             title_set = Title.objects.filter(id=id)
+
             for title in title_set:
                 if name:
                     title.name = name
@@ -220,24 +241,29 @@ class TitleViewSet(viewsets.ViewSet):
                     title.weight = weight
                 if titleGroup_id:
                     titleGroup_set = TitleGroup.objects.filter(id=titleGroup_id)
+
                     if not titleGroup_set.exists():
                         continue
+
                     title.titleGroup = titleGroup_set[0]
                 if classInfo_id:
                     classInfo_set = ClassInfo.objects.filter(id=classInfo_id)
+
                     if not classInfo_set.exists():
                         continue
+
                     title.classInfo = classInfo_set[0]
+
                 try:
                     title.save()
-                except Exception as e:
-                    continue
-                else:
                     ids.append({'id': title.id})
                     tag = True
-        if tag:
+                except Exception as e:
+                    continue
 
-            return JsonResponse({'subjects':ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+        if tag:
+            return JsonResponse({'subjects': ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+
         else:
             return update_failed()
 
@@ -252,28 +278,34 @@ class TitleViewSet(viewsets.ViewSet):
                     删除失败，返回delete_failed的JSON response
                     删除成功，返回delete_succeed的JSON response
         """
-        delete_data = request.data
         access_token = request.META.get("HTTP_TOKEN")
-
         if not token_verify(access_token):
             return token_invalid()
+
+        delete_data = request.data
         subjects = delete_data.get('subjects')
+
         if subjects is None:
             return parameter_missed()
+
         tag = False
         for subjectDict in subjects:
             id = subjectDict.get('id')
+
             if id is None:
                 continue
+
             title_set = Title.objects.filter(id=id)
+
             if not title_set.exists():
                 continue
+
             try:
                 title_set.delete()
+                tag = True
             except Exception as e:
                 continue
-            else:
-                tag = True
+
         if tag:
             return delete_succeed()
         else:
