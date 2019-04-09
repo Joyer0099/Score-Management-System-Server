@@ -21,8 +21,11 @@ from django.forms.models import model_to_dict
 
 class AnalyseViewSet(viewsets.ViewSet):
     def getNameListBySidList(self, request):
-        # 根据sidList得到nameList
-        # nameList形如['张三','李四',……]
+        """
+        根据sidList得到nameList
+        :param request: the request from browser.
+        :return: the nameList
+        """
 
         id_list = [13, 24]
         student_set = Student.objects.filter(id__in=id_list)
@@ -40,15 +43,20 @@ class AnalyseViewSet(viewsets.ViewSet):
         return JsonResponse(name_list, safe=False)
 
     def getScoreListMapBySidList(self, request):
-        #   map={
-        #   'sid':'2019001',      //学号
-        #   'score_zk':70,        //期中客观分
-        #   'score_zz':18,        //期中主观分
-        #   'score_zs':88,        //期中总分
-        #   'score_mk':47,        //期末客观分
-        #   'score_mz':10,        //期末主观分
-        #   'score_ms':57,        //期末总分
-        #   }
+        """
+        根据sidList得到ListMap，Map的具体形式如下：
+          map={
+          'sid':'2019001',      //学号
+          'score_zk':70,        //期中客观分
+          'score_zz':18,        //期中主观分
+          'score_zs':88,        //期中总分
+          'score_mk':47,        //期末客观分
+          'score_mz':10,        //期末主观分
+          'score_ms':57,        //期末总分
+          }
+        :param request: the request from browser.
+        :return: the list map
+        """
 
         id_list = [354, 353, 352, 351, 350]
 
@@ -128,17 +136,22 @@ class AnalyseViewSet(viewsets.ViewSet):
         return JsonResponse(results, safe=False)
 
     def getAllScores(self, request):
-        #     map={
-        #         'vocabulary':40,        //期中词汇分
-        #         'hearing':9,            //期中听力分
-        #         'translate':7,          //期中翻译分
-        #         'writing':7,            //期中写作分
-        #         'details':7,            //期中细节分
-        #         'subjective_qz':20,     //期中主观分
-        #         'objective_qm':60,      //期末客观分
-        #         'subjective_qm':20,     //期末主观分
-        #         'xuewei':70             //学位总分
-        #     }
+        """
+        获取某学期内所有学生的成绩，得到一个listMap，Map的具体形式如下：
+        map={
+            'vocabulary':40,        //期中词汇分
+            'hearing':9,            //期中听力分
+            'translate':7,          //期中翻译分
+            'writing':7,            //期中写作分
+            'details':7,            //期中细节分
+            'subjective_qz':20,     //期中主观分
+            'objective_qm':60,      //期末客观分
+            'subjective_qm':20,     //期末主观分
+            'xuewei':70             //学位总分
+        }
+        :param request: the server from browser
+        :return: the list map
+        """
         semester = '2018年秋季'
         temps = []
         dicts = {}
