@@ -10,6 +10,7 @@ Here are operations:
                logout: POST http://localhost:8000/api/v1/user/logout
                 query: GET  http://localhost:8000/api/v1/user/info/format
 get_user_full_message: GET  http://localhost:8000/api/v1/user/info/display
+      change_own_info: POST http://localhost:8000/api/v1/usr/info/format
 """
 
 from apps.MarkManagement.view.common import *
@@ -254,3 +255,57 @@ class TeacherViewSet(viewsets.ViewSet):
         }
 
         return JsonResponse(result, safe=False)
+
+    def change_own_info(self, request):
+        """
+        Update t_Teacher table
+        :param request: the request from browser. 用来获取access_token和更新条件
+        :return: JSON response. 包括code, message, subjects(opt)
+                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
+                 2、如果request中的subjects参数为空，即Body-raw-json中没有内容，返回parameter_missed的JSON response
+                 3、如果符合条件，尝试更新
+                    更新失败，返回update_failed的JSON response
+                    更新成功，返回update_succeed的JSON response
+        """
+        access_token = request.META.get("HTTP_TOKEN")
+        if not token_verify(access_token):
+            return token_invalid()
+
+        subjects = request.data.get('subjects')
+
+        if subjects is None:
+            return parameter_missed()
+
+        for subject_dict in subjects:
+            id = subject_dict.get('id')
+            tid = subject_dict.get('tid')
+            name = subject_dict.get('name')
+            college_id = subject_dict.get('college_id')
+            mobile = subject_dict.get('mobile')
+            email = subject_dict.get('email')
+            password = subject_dict.get('password')
+            teacher_set = Teacher.objects.filter(id=id)
+
+            for teacher in teacher_set:
+                if tid:
+                    teacher.tid = tid
+                if name:
+                    teacher.name = name
+                if mobile:
+                    teacher.mobile = mobile
+                if email:
+                    teacher.email = email
+                if password:
+                    teacher.password = password
+                if college_id:
+                    college_set = College.objects.filter(id=college_id)
+
+                    if not college_set.exists():
+                        continue
+
+                    teacher.college = college_set[0]
+
+                teacher.save()
+                return update_succeed()
+
+        return update_failed()
