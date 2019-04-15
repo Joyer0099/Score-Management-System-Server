@@ -215,7 +215,7 @@ class TeacherManageViewSet(viewsets.ViewSet):
                     teacher.college = college_set[0]
 
                 teacher.save()
-                ids.append({'id':teacher.id})
+                ids.append({'id': teacher.id})
                 tag = True
 
         if tag:
