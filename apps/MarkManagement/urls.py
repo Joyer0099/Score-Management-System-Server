@@ -16,19 +16,20 @@ urlpath = [
                                                                   'post': 'insert',
                                                                   'put': 'update',
                                                                   'delete': 'remove'})),
-    # class
+    # class_field
     re_path(r'^table/class_field/wrapper', views.ClassViewSet.as_view({'post': 'query_wrapper'})),
     re_path(r'^table/class_field/format', views.ClassViewSet.as_view({'get': 'query',
                                                                       'post': 'insert',
                                                                       'delete': 'remove'})),
 
+    # class_info
     re_path(r'^table/class_info/format', views.ClassInfoViewSet.as_view({'get': 'query',
                                                                          'post': 'insert',
                                                                          'put': 'update',
                                                                          'delete': 'remove'})),
     #necessary
-    re_path(r'^table/class_info/display$', views.ClassInfoViewSet.as_view({'get': 'get_classInfo_full_message'})),
-    re_path(r'^table/class_info/display/all',
+    re_path(r'^table/class_info/detail/some', views.ClassInfoViewSet.as_view({'get': 'get_classInfo_full_message'})),
+    re_path(r'^table/class_info/detail/all',
             views.ClassInfoViewSet.as_view({'get': 'get_classInfo_full_message_all'})),
 
     # teacher,目前等价于user
@@ -40,6 +41,7 @@ urlpath = [
     re_path(r'^user/info/display', views.TeacherViewSet.as_view({'get': 'get_user_full_message'})),
 
     re_path(r'^user/info/format', views.TeacherViewSet.as_view({'get': 'query'})),
+    re_path(r'^usr/info/format', views.TeacherViewSet.as_view({'put': 'change_own_info'})),
 
     re_path(r'^user/logon', views.TeacherViewSet.as_view({'post': 'logon'})),
     re_path(r'^user/login', views.TeacherViewSet.as_view({'post': 'login'})),
@@ -82,6 +84,8 @@ urlpath = [
                                                           'post': 'insert',
                                                           'put': 'update',
                                                           'delete': 'remove'})),
+    re_path(r'^point/import_data', views.ImportDataViewSet.as_view({'post': 'insert'})),
+
     # title
     re_path(r'^title/display', views.TitleViewSet.as_view({'get':'get_title_list'})),
     re_path(r'^title/format', views.TitleViewSet.as_view({'get': 'query',
@@ -93,12 +97,12 @@ urlpath = [
                                                                     'post': 'insert',
                                                                     'put': 'update',
                                                                     'delete': 'remove'})),
-    re_path(r'^import_data', views.ImportDataViewSet.as_view({'post': 'insert'})),
-    # semester
+
+    # TODO: semester change
     # re_path(r'^semester/$',views.)
 
-    # analyze
-    re_path(r'^student/name/', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
-    re_path(r'^score/', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
-    re_path(r'^score/all/', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
+    # analysis
+    re_path(r'^analysis/student/name', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
+    re_path(r'^analysis/score/format', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
+    re_path(r'^analysis/score/all', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
 ]
