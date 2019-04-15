@@ -5,13 +5,13 @@
 This file is for the data analysis of student's scores
 
             AnalyseViewSet: According student's id list to get the student's name
-                            GET http://localhost:8000/api/v1/student/name
+                            GET http://localhost:8000/api/v1/analysis/student/name
   getScoreListMapBySidList: According student's id list to get a map including
                             学号，期中客观分，期中主观分，期中总分，期末客观分，期末主观分，期末总分
-                            GET http://localhost:8000/api/v1/score/
+                            GET http://localhost:8000/api/v1/analysis/score/format
               getAllScores: According semester to get a map including
                             期中词汇分，期中听力分，期中翻译分，期中写作分，期中细节分，期中主观分，期末客观分，期末主观分，学位总分
-                            GET http://localhost:8000/api/v1/score/all
+                            GET http://localhost:8000/api/v1/analysis/score/all
 """
 from __future__ import division
 
@@ -26,8 +26,15 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the request from browser.
         :return: the nameList
         """
+        access_token = request.META.get('HTTP_TOKEN')
+        if not token_verify(access_token):
+            return token_invalid()
 
-        id_list = [13, 24]
+        id_list = request.data.get('id_list')
+
+        if not id_list:
+            return parameter_missed()
+
         student_set = Student.objects.filter(id__in=id_list)
         # student_set = student_set.values()
 
@@ -57,8 +64,14 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the request from browser.
         :return: the list map
         """
+        access_token = request.META.get('HTTP_TOKEN')
+        if not token_verify(access_token):
+            return token_invalid()
 
-        id_list = [354, 353, 352, 351, 350]
+        id_list = request.data.get('id_list')
+
+        if not id_list:
+            return parameter_missed()
 
         point_set = Point.objects.filter(student_id__in=id_list)
 
@@ -152,7 +165,15 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the server from browser
         :return: the list map
         """
-        semester = '2018年秋季'
+        access_token = request.META.get('HTTP_TOKEN')
+        if not token_verify(access_token):
+            return token_invalid()
+
+        semester = request.GET.get('semester')
+
+        if not semester:
+            return parameter_missed()
+
         temps = []
         dicts = {}
         results = []
@@ -214,7 +235,6 @@ class AnalyseViewSet(viewsets.ViewSet):
             del point_dict['titleGroupName']
             del point_dict['titleName']
             del point_dict['score']
-
             temps.append(point_dict)
 
         for temp in temps:
@@ -226,7 +246,8 @@ class AnalyseViewSet(viewsets.ViewSet):
 
         for value in dicts.values():
             del value['student']
-            results.append(value)
+            if value != {}:
+                results.append(value)
 
         return JsonResponse(results, safe=False)
 
