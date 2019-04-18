@@ -40,8 +40,8 @@ urlpath = [
     #necessary
     re_path(r'^user/info/display', views.TeacherViewSet.as_view({'get': 'get_user_full_message'})),
 
-    re_path(r'^user/info/format', views.TeacherViewSet.as_view({'get': 'query'})),
-    re_path(r'^usr/info/format', views.TeacherViewSet.as_view({'put': 'change_own_info'})),
+    re_path(r'^user/info/format', views.TeacherViewSet.as_view({'get': 'query',
+                                                                'put': 'change_own_info'})),
 
     re_path(r'^user/logon', views.TeacherViewSet.as_view({'post': 'logon'})),
     re_path(r'^user/login', views.TeacherViewSet.as_view({'post': 'login'})),
