@@ -285,11 +285,18 @@ class TeacherViewSet(viewsets.ViewSet):
             email = subject_dict.get('email')
             old_password = subject_dict.get('old_password')
             new_password = subject_dict.get('new_password')
+            if not id or not old_password:
+                return parameter_missed()
+
             teacher_set = Teacher.objects.filter(id=id)
 
             for teacher in teacher_set:
                 if teacher.password != old_password:
-                    return JsonResponse({'code': 4021, 'message': status_code[4021]}, safe=False)
+                    response = {
+                        'code': '4021',
+                        'message': status_code['4021']
+                    }
+                    return JsonResponse(response, safe=False)
                 if tid:
                     teacher.tid = tid
                 if name:
@@ -298,7 +305,7 @@ class TeacherViewSet(viewsets.ViewSet):
                     teacher.mobile = mobile
                 if email:
                     teacher.email = email
-                if password:
+                if new_password:
                     teacher.password = new_password
                 if college_id:
                     college_set = College.objects.filter(id=college_id)
