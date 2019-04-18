@@ -51,12 +51,6 @@ class ImportDataViewSet(viewsets.ViewSet):
             for classInfo in classInfo_set:
                 classInfo_id_set.add(classInfo.id)
 
-        temp = []
-        for ci in classInfo_id_set:
-            temp.append(ci)
-
-        return JsonResponse(temp, safe=False)
-
         if len(classInfo_id_set) == 0:
             return insert_failed()
 
