@@ -8,9 +8,9 @@ Here are operations:
                 logon: POST http://localhost:8000/api/v1/user/logon
                 login: POST http://localhost:8000/api/v1/user/login
                logout: POST http://localhost:8000/api/v1/user/logout
-                query: GET  http://localhost:8000/api/v1/user/info/format
 get_user_full_message: GET  http://localhost:8000/api/v1/user/info/display
-      change_own_info: POST http://localhost:8000/api/v1/usr/info/format
+                query: GET  http://localhost:8000/api/v1/user/info/format
+      change_own_info: PUT http://localhost:8000/api/v1/usr/info/format
 """
 
 from apps.MarkManagement.view.common import *
@@ -283,10 +283,13 @@ class TeacherViewSet(viewsets.ViewSet):
             college_id = subject_dict.get('college_id')
             mobile = subject_dict.get('mobile')
             email = subject_dict.get('email')
-            password = subject_dict.get('password')
+            old_password = subject_dict.get('old_password')
+            new_password = subject_dict.get('new_password')
             teacher_set = Teacher.objects.filter(id=id)
 
             for teacher in teacher_set:
+                if teacher.password != old_password:
+                    return JsonResponse({'code': 4021, 'message': status_code[4021]}, safe=False)
                 if tid:
                     teacher.tid = tid
                 if name:
@@ -296,7 +299,7 @@ class TeacherViewSet(viewsets.ViewSet):
                 if email:
                     teacher.email = email
                 if password:
-                    teacher.password = password
+                    teacher.password = new_password
                 if college_id:
                     college_set = College.objects.filter(id=college_id)
 

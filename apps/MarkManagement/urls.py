@@ -17,7 +17,7 @@ urlpath = [
                                                                   'put': 'update',
                                                                   'delete': 'remove'})),
     # class_field
-    re_path(r'^table/class_field/wrapper', views.ClassViewSet.as_view({'post': 'query_wrapper'})),
+    re_path(r'^table/class_field/wrapper', views.ClassViewSet.as_view({'get': 'query_wrapper'})),
     re_path(r'^table/class_field/format', views.ClassViewSet.as_view({'get': 'query',
                                                                       'post': 'insert',
                                                                       'delete': 'remove'})),
@@ -87,7 +87,7 @@ urlpath = [
     re_path(r'^point/import_data', views.ImportDataViewSet.as_view({'post': 'insert'})),
 
     # title
-    re_path(r'^title/display', views.TitleViewSet.as_view({'get':'get_title_list'})),
+    re_path(r'^title/display', views.TitleViewSet.as_view({'get': 'get_title_list'})),
     re_path(r'^title/format', views.TitleViewSet.as_view({'get': 'query',
                                                           'post': 'insert',
                                                           'put': 'update',

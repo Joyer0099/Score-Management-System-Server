@@ -5,8 +5,8 @@
 This file is for the operation of t_ClassInfo table.
 
 Here are operations:
-get_classInfo_full_message_all: GET    http://localhost:8000/api/v1/table/class_info/display/all
-    get_classInfo_full_message: GET    http://localhost:8000/api/v1/table/class_info/display
+get_classInfo_full_message_all: GET    http://localhost:8000/api/v1/table/class_info/detail/all
+    get_classInfo_full_message: GET    http://localhost:8000/api/v1/table/class_info/detail/some
                          query: GET    http://localhost:8000/api/v1/table/class_info/format
                         insert: POST   http://localhost:8000/api/v1/table/class_info/format
                         update: PUT    http://localhost:8000/api/v1/table/class_info/format
@@ -18,7 +18,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def get_classInfo_full_message_all(self, request):
         """
-        Get all data in t_ClassInfo join t_Lesson join t_Teacher table
+        管理员获取到所有课程信息
         :param request: the request from browser. 用来获取access_token
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -62,7 +62,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
         if len(result) == 0:
             return JsonResponse({
-                'current_semester':current_semester,
+                'current_semester': current_semester,
                 'code': '4036',
                 'message': status_code['4036']},
                 safe=False)
@@ -79,7 +79,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def get_classInfo_full_message(self, request):
         """
-        Get t_ClassInfo table
+        任课教师获取到个人课程信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -90,7 +90,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
         """
         access_token = request.META.get("HTTP_TOKEN")
 
-        if not token_verify(access_token) :
+        if not token_verify(access_token):
             return token_invalid()
 
         id = request.GET.get('id')

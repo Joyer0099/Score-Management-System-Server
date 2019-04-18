@@ -60,7 +60,7 @@ if DEBUG:
 
         # -02- 表示用户身份认证失败
         '4020': 'Error, User is not exist',
-        '4021': 'Error, Username or password is incurrent',
+        '4021': 'Error, Username or password is incorrect',
         '4022': 'Error, User out of date',
         '4023': 'Error, User already exists',
         '4024': 'Error, Forbidden user',

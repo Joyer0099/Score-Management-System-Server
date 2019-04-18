@@ -6,7 +6,7 @@
 This file is for the operation of import data from the browser into database.
 
 Here is the operation:
-insert: POST http://localhost:8000/api/v1/import_data
+insert: POST http://localhost:8000/api/v1/point/import_data
 """
 
 from apps.MarkManagement.view.common import *
@@ -44,12 +44,18 @@ class ImportDataViewSet(viewsets.ViewSet):
         lesson_id = post_data.get('lesson_id')
         sid_list = post_data.get('sid_list')
 
-        # 1.拿到所有的classInfo_id
+        # 1.拿到所有的classInfo_id，即得到学生所在课程id集合
         classInfo_id_set = set()
         for sid in sid_list:
             classInfo_set = ClassInfo.objects.filter(Q(lesson_id=lesson_id) & Q(class__student__sid=sid))
             for classInfo in classInfo_set:
                 classInfo_id_set.add(classInfo.id)
+
+        temp = []
+        for ci in classInfo_id_set:
+            temp.append(ci)
+
+        return JsonResponse(temp, safe=False)
 
         if len(classInfo_id_set) == 0:
             return insert_failed()
@@ -59,6 +65,7 @@ class ImportDataViewSet(viewsets.ViewSet):
             for title_message in title_list:
                 title_name = title_message['name']
                 titleGroup_id = title_message['titleGroup_id']
+
                 title_set = Title.objects.filter(
                     Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
                 if title_set.exists():

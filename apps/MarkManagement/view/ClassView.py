@@ -5,7 +5,7 @@
 This file is for the operation of t_Class table.
 
 Here are operations:
-query_wrapper: POST   http://localhost:8000/api/v1/table/class_field/wrapper
+query_wrapper: GET    http://localhost:8000/api/v1/table/class_field/wrapper
         query: GET    http://localhost:8000/api/v1/table/class_field/format
        insert: POST   http://localhost:8000/api/v1/table/class_field/format
        remove: DELETE http://localhost:8000/api/v1/table/class_field/format
@@ -17,7 +17,7 @@ class ClassViewSet(viewsets.ViewSet):
 
     def query_wrapper(self, request):
         """
-        Query wrapper t_Class table
+        根据筛选选项获取教学班拥有学生数及学生的id
         :param request: the request from browser. 用来获取access_token
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -45,7 +45,7 @@ class ClassViewSet(viewsets.ViewSet):
             #sname = request.GET.get('sname')
             classInfo_id = subjectsDict.get('classInfo_id')
 
-            if id  is None and student_id is None and classInfo_id is None:
+            if id is None and student_id is None and classInfo_id is None:
                 continue
 
             class_set = Class.objects.all()
