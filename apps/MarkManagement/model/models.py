@@ -54,7 +54,7 @@ class College(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ("name","shortname")
+        unique_together = ("name", "shortname")
         db_table = 't_College'
 
 class Teacher(models.Model):
@@ -111,7 +111,7 @@ class Major(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ("name","college")
+        unique_together = ("name", "college")
         db_table = 't_Major'
 
 class Student(models.Model):
@@ -146,7 +146,7 @@ class Lesson(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('name','college')
+        unique_together = ('name', 'college')
         db_table = 't_Lesson'
 
 class ClassInfo(models.Model):
@@ -190,7 +190,7 @@ class Class(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('student','classInfo')
+        unique_together = ('student', 'classInfo')
         db_table = 't_Class'
 
 class TitleGroup(models.Model):
@@ -208,7 +208,7 @@ class TitleGroup(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('name','lesson')
+        unique_together = ('name', 'lesson')
         db_table = 't_TitleGroup'
 
 class Title(models.Model):
@@ -227,7 +227,7 @@ class Title(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('titleGroup','name','classInfo')
+        unique_together = ('titleGroup', 'name', 'classInfo')
         db_table = 't_Title'
 
 class Point(models.Model):
@@ -248,6 +248,6 @@ class Point(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('student','title')
+        unique_together = ('student', 'title')
         db_table = 't_Point'
 
