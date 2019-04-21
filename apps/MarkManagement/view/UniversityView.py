@@ -129,7 +129,7 @@ class UniversityViewSet(viewsets.ViewSet):
 
         # 根据插入操作的成功与失败，返回对应JSON response
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
         else:
             return insert_failed()
 
