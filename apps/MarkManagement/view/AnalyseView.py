@@ -26,9 +26,6 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the request from browser.
         :return: the nameList
         """
-        access_token = request.META.get('HTTP_TOKEN')
-        if not token_verify(access_token):
-            return token_invalid()
 
         id_list = request.data.get('id_list')
 
@@ -64,9 +61,6 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the request from browser.
         :return: the list map
         """
-        access_token = request.META.get('HTTP_TOKEN')
-        if not token_verify(access_token):
-            return token_invalid()
 
         id_list = request.data.get('id_list')
 
@@ -165,9 +159,6 @@ class AnalyseViewSet(viewsets.ViewSet):
         :param request: the server from browser
         :return: the list map
         """
-        access_token = request.META.get('HTTP_TOKEN')
-        if not token_verify(access_token):
-            return token_invalid()
 
         semester = request.GET.get('semester')
 
@@ -178,21 +169,12 @@ class AnalyseViewSet(viewsets.ViewSet):
         dicts = {}
         results = []
 
-        classInfo_set = ClassInfo.objects.filter(semester=semester)
-
-        classInfo_id_set = []
-        for classInfo in classInfo_set:
-            classInfo_dict = model_to_dict(classInfo)
-            classInfo_id_set.append(classInfo_dict['id'])
-
-        point_set = Point.objects.filter(classInfo_id__in=classInfo_set)
+        point_set = Point.objects.filter(classInfo__semester=semester)
 
         for point in point_set:
             point_dict = model_to_dict(point)
             title_dict = model_to_dict(point.title)
             titleGroup_dict = model_to_dict(point.title.titleGroup)
-            # point_dict['title'] = title_dict
-            # point_dict['titleGroup'] = titleGroup_dict
             point_dict['titleName'] = title_dict['name']
             point_dict['titleGroupName'] = titleGroup_dict['name']
 
@@ -250,18 +232,3 @@ class AnalyseViewSet(viewsets.ViewSet):
                 results.append(value)
 
         return JsonResponse(results, safe=False)
-
-        # point_set = Point.objects.filter(classInfo__semester=semester)
-        #
-        # for point in point_set:
-        #     point_dict = model_to_dict(point)
-        #     del point_dict['id']
-        #     del point_dict['note']
-        #     del point_dict['classInfo']
-        #     title_dict = model_to_dict(point.title)
-        #     titleGroup_dict = model_to_dict(point.title.titleGroup)
-        #     point_dict['title'] = title_dict['name']
-        #     point_dict['titleGroup'] = titleGroup_dict['name']
-        #     temps.append(point_dict)
-        #
-        # return JsonResponse(temps, safe=False)
