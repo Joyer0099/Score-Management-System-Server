@@ -169,55 +169,45 @@ class AnalyseViewSet(viewsets.ViewSet):
         dicts = {}
         results = []
 
-        point_set = Point.objects.filter(classInfo__semester=semester)
+        # improve the performance
+        point_set = Point.objects.filter(classInfo__semester=semester)\
+            .values('student', 'pointNumber', 'title__name', 'title__titleGroup__name')
 
         for point in point_set:
-            point_dict = model_to_dict(point)
-            title_dict = model_to_dict(point.title)
-            titleGroup_dict = model_to_dict(point.title.titleGroup)
-            point_dict['titleName'] = title_dict['name']
-            point_dict['titleGroupName'] = titleGroup_dict['name']
+            point['score'] = point['pointNumber']
 
-            # TODO: Maybe the score's calculation is not correct.
-            point_dict['score'] = point_dict['pointNumber']
-
-            del point_dict['id']
-            del point_dict['classInfo']
-            del point_dict['title']
-            del point_dict['pointNumber']
-            del point_dict['note']
-
-            if '期中' in point_dict['titleGroupName']:
-                if '词汇' in point_dict['titleName']:
-                    point_dict['vocabulary'] = point_dict['score']
-                elif '听力' in point_dict['titleName']:
-                    point_dict['hearing'] = point_dict['score']
-                elif '翻译' in point_dict['titleName']:
-                    point_dict['translate'] = point_dict['score']
-                elif '写作' in point_dict['titleName']:
-                    point_dict['writing'] = point_dict['score']
-                elif '细节' in point_dict['titleName']:
-                    point_dict['details'] = point_dict['score']
-                elif '主观' in point_dict['titleName']:
-                    point_dict['subjective_qz'] = point_dict['score']
+            if '期中' in point['title__titleGroup__name']:
+                if '词汇' in point['title__name']:
+                    point['vocabulary'] = point['score']
+                elif '听力' in point['title__name']:
+                    point['hearing'] = point['score']
+                elif '翻译' in point['title__name']:
+                    point['translate'] = point['score']
+                elif '写作' in point['title__name']:
+                    point['writing'] = point['score']
+                elif '细节' in point['title__name']:
+                    point['details'] = point['score']
+                elif '主观' in point['title__name']:
+                    point['subjective_qz'] = point['score']
                 else:
                     continue
 
-            if '期末' in point_dict['titleGroupName']:
-                if '主观' in point_dict['titleName']:
-                    point_dict['subjective_qm'] = point_dict['score']
-                elif '客观' in point_dict['titleName']:
-                    point_dict['objective_qm'] = point_dict['score']
+            if '期末' in point['title__titleGroup__name']:
+                if '主观' in point['title__name']:
+                    point['subjective_qm'] = point['score']
+                elif '客观' in point['title__name']:
+                    point['objective_qm'] = point['score']
                 else:
                     continue
 
-            elif '学位英语成绩' in point_dict['titleGroupName']:
-                point_dict['xuewei'] = point_dict['score']
+            elif '学位英语成绩' in point['title__titleGroup__name']:
+                point['xuewei'] = point['score']
 
-            del point_dict['titleGroupName']
-            del point_dict['titleName']
-            del point_dict['score']
-            temps.append(point_dict)
+            del point['pointNumber']
+            del point['title__titleGroup__name']
+            del point['title__name']
+            del point['score']
+            temps.append(point)
 
         for temp in temps:
             if temp['student'] in dicts:
@@ -230,5 +220,68 @@ class AnalyseViewSet(viewsets.ViewSet):
             del value['student']
             if value != {}:
                 results.append(value)
+
+        # Bad performance method
+        # point_set = Point.objects.filter(classInfo__semester=semester)
+        #
+        # for point in point_set:
+        #     point_dict = model_to_dict(point)
+        #     title_dict = model_to_dict(point.title)
+        #     titleGroup_dict = model_to_dict(point.title.titleGroup)
+        #     point_dict['titleName'] = title_dict['name']
+        #     point_dict['titleGroupName'] = titleGroup_dict['name']
+        #
+        #     # TODO: Maybe the score's calculation is not correct.
+        #     point_dict['score'] = point_dict['pointNumber']
+        #
+        #     del point_dict['id']
+        #     del point_dict['classInfo']
+        #     del point_dict['title']
+        #     del point_dict['pointNumber']
+        #     del point_dict['note']
+        #
+        #     if '期中' in point_dict['titleGroupName']:
+        #         if '词汇' in point_dict['titleName']:
+        #             point_dict['vocabulary'] = point_dict['score']
+        #         elif '听力' in point_dict['titleName']:
+        #             point_dict['hearing'] = point_dict['score']
+        #         elif '翻译' in point_dict['titleName']:
+        #             point_dict['translate'] = point_dict['score']
+        #         elif '写作' in point_dict['titleName']:
+        #             point_dict['writing'] = point_dict['score']
+        #         elif '细节' in point_dict['titleName']:
+        #             point_dict['details'] = point_dict['score']
+        #         elif '主观' in point_dict['titleName']:
+        #             point_dict['subjective_qz'] = point_dict['score']
+        #         else:
+        #             continue
+        #
+        #     if '期末' in point_dict['titleGroupName']:
+        #         if '主观' in point_dict['titleName']:
+        #             point_dict['subjective_qm'] = point_dict['score']
+        #         elif '客观' in point_dict['titleName']:
+        #             point_dict['objective_qm'] = point_dict['score']
+        #         else:
+        #             continue
+        #
+        #     elif '学位英语成绩' in point_dict['titleGroupName']:
+        #         point_dict['xuewei'] = point_dict['score']
+        #
+        #     del point_dict['titleGroupName']
+        #     del point_dict['titleName']
+        #     del point_dict['score']
+        #     temps.append(point_dict)
+        #
+        # for temp in temps:
+        #     if temp['student'] in dicts:
+        #         dicts[temp['student']].update(temp)
+        #
+        #     else:
+        #         dicts[temp['student']] = temp
+        #
+        # for value in dicts.values():
+        #     del value['student']
+        #     if value != {}:
+        #         results.append(value)
 
         return JsonResponse(results, safe=False)
