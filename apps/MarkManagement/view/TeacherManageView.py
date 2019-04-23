@@ -195,6 +195,7 @@ class TeacherManageViewSet(viewsets.ViewSet):
             college_id = subjectDict.get('college_id')
             mobile = subjectDict.get('mobile')
             email = subjectDict.get('email')
+            is_manager = subjectDict.get('is_manager')
             teacher_set = Teacher.objects.filter(id=id)
 
             for teacher in teacher_set:
@@ -206,6 +207,8 @@ class TeacherManageViewSet(viewsets.ViewSet):
                     teacher.email = email
                 if name:
                     teacher.name = name
+                if is_manager:
+                    teacher.is_manager = is_manager
                 if college_id:
                     college_set = College.objects.filter(id=college_id)
 
