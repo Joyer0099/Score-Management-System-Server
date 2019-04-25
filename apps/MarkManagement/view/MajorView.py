@@ -13,6 +13,7 @@ remove: DELETE http://localhost:8000/api/v1/major/format
 
 from apps.MarkManagement.view.common import *
 
+
 class MajorViewSet(viewsets.ViewSet):
 
     def query(self, request):

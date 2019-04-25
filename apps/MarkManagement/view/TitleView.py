@@ -14,6 +14,7 @@ get_title_list: GET    http://localhost:8000/api/v1/title/display
 
 from apps.MarkManagement.view.common import *
 
+
 class TitleViewSet(viewsets.ViewSet):
 
     def get_title_list(self, request):

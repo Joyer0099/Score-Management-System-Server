@@ -14,6 +14,7 @@ get_classInfo_full_message_all: GET    http://localhost:8000/api/v1/table/class_
 """
 from apps.MarkManagement.view.common import *
 
+
 class ClassInfoViewSet(viewsets.ViewSet):
 
     def get_classInfo_full_message_all(self, request):

@@ -13,6 +13,7 @@ remove: DELETE http://localhost:8000/api/v1/user/info/manage
 
 from apps.MarkManagement.view.common import *
 
+
 class TeacherManageViewSet(viewsets.ViewSet):
 
     def query(self, request):

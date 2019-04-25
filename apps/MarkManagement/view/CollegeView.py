@@ -13,6 +13,7 @@ get_college_list: GET    http://localhost:8000/api/v1/college/display
 """
 from apps.MarkManagement.view.common import *
 
+
 class CollegeViewSet(viewsets.ViewSet):
 
     def get_college_list(self, request):

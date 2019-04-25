@@ -13,6 +13,7 @@ query_wrapper: GET    http://localhost:8000/api/v1/table/class_field/wrapper
 
 from apps.MarkManagement.view.common import *
 
+
 class ClassViewSet(viewsets.ViewSet):
 
     def query_wrapper(self, request):

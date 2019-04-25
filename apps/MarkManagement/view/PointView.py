@@ -14,6 +14,7 @@ get_point_list: GET    http://localhost:8000/api/v1/point/display
 
 from apps.MarkManagement.view.common import *
 
+
 class PointViewSet(viewsets.ViewSet):
 
     def get_point_list(self, request):
