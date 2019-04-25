@@ -102,7 +102,14 @@ urlpath = [
     # re_path(r'^semester/$',views.)
 
     # analysis
+    # re_path(r'^analysis/prediction', views.AnalysisViewSet.as_view({'post': 'AnalysisFun'})),
     re_path(r'^analysis/student/name', views.AnalyseViewSet.as_view({'get': 'getNameListBySidList'})),
     re_path(r'^analysis/score/format', views.AnalyseViewSet.as_view({'get': 'getScoreListMapBySidList'})),
-    re_path(r'^analysis/score/all', views.AnalyseViewSet.as_view({'get': 'getAllScores'}))
+    re_path(r'^analysis/score/all', views.AnalyseViewSet.as_view({'get': 'getAllScores'})),
+
+    # 成绩预测
+    re_path(r'^analysis/pass', views.PredictViewSet.as_view({'post': 'predictScore'})),
+
+    # 课程分析
+    re_path(r'^analysis/class', views.AnalysisViewSet.as_view({'post': 'Analysisfun'}))
 ]

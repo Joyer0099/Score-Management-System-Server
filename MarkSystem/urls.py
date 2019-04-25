@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
 from apps.MarkManagement.urls import urlpath
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 路由分发
