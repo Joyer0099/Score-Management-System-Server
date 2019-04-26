@@ -190,20 +190,20 @@ class PredictViewSet(viewsets.ViewSet):
         # print(type(request.data))
         # print(request.data)
         sidList = request.data.get('idList')
-        print('sidList=', sidList)
+        # print('sidList=', sidList)
         # request.data['sidList']['param']
 
         # 获得学生姓名列表
         nameList = []
         nameList = getNameListBySidList(sidList)
-        print('nameList=', nameList)
+        # print('nameList=', nameList)
 
         # 根据sidList获得入学第一学年秋季的期中客观分、期中主观分、期中总分、期末客观分、期末主观分和期末总分
         dataset = getScoreListMapBySidList(sidList)
 
         # 转换数据格式
         dataset = DataFrame(dataset)
-        print("dataset=", dataset)
+        # print("dataset=", dataset)
 
         sidList = list(dataset['sid'])
         dataset.drop('sid', axis=1, inplace=True)
