@@ -20,6 +20,7 @@ class PredictViewSet(viewsets.ViewSet):
         :param request:
         :return:
         """
+
         def getScoreListMapBySidList(id_list):
             """
             该函数用于，根据sidList获得sidList中所包含的学生的入学第一学年秋季的期中客观分、期中主观分、期中总分、期末客观分、期末主观分和期末总分

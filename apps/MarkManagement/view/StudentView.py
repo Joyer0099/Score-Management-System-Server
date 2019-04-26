@@ -56,7 +56,6 @@ class StudentViewSet(viewsets.ViewSet):
 
                 student_dict['major_message'] = major_dict
 
-
                 college_dict = model_to_dict(student.major.college)
                 college_dict['university_id'] = college_dict['university']
                 del college_dict['university']
@@ -219,7 +218,7 @@ class StudentViewSet(viewsets.ViewSet):
                 student_set = Student.objects.filter(sid=sid)
 
                 if student_set.exists():
-                    repeated_ids.append({"id":student_set[0].id})
+                    repeated_ids.append({"id": student_set[0].id})
                     continue
 
                 student.sid = sid
@@ -233,7 +232,7 @@ class StudentViewSet(viewsets.ViewSet):
 
             try:
                 student.save()
-                succeed_ids.append({'id':student.id})
+                succeed_ids.append({'id': student.id})
                 tag = True
             # except IntegrityError:
             #     print("exist")

@@ -104,7 +104,7 @@ class TitleViewSet(viewsets.ViewSet):
         titleGroup_id = request.GET.get('titleGroup_id')
         classInfo_id = request.GET.get('classInfo_id')
 
-        if id is None and name is None  and type is None and titleGroup_id is None and classInfo_id is None:
+        if id is None and name is None and type is None and titleGroup_id is None and classInfo_id is None:
             return parameter_missed()
 
         title_set = Title.objects.all()
@@ -197,7 +197,7 @@ class TitleViewSet(viewsets.ViewSet):
                 continue
 
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
         else:
             return insert_failed()
 

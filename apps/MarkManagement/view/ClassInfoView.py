@@ -148,7 +148,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
         if len(result) == 0:
             return JsonResponse(
-                {'current_semester':current_semester,
+                {'current_semester': current_semester,
                  'code': '4036',
                  'message': status_code['4036']}, safe=False)
 
@@ -162,7 +162,6 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
         return JsonResponse(result, safe=False)
 
-
     def query(self, request):
         """
         Query t_ClassInfo table
@@ -175,7 +174,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     查询成功，返回JSON response包括code, message, subjects, count，状态码2000
         """
         access_token = request.META.get("HTTP_TOKEN")
-        if not token_verify(access_token) :
+        if not token_verify(access_token):
             return token_invalid()
 
         id = request.GET.get('id')
@@ -218,7 +217,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
         if len(result) == 0:
             return JsonResponse(
-                {'current_semester':current_semester,
+                {'current_semester': current_semester,
                  'code': '4036',
                  'message': status_code['4036']}, safe=False)
 
@@ -314,7 +313,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     更新成功，返回JSON reponse包括code, message, subjects，状态码2005
         """
         access_token = request.META.get("HTTP_TOKEN")
-        if not token_verify(access_token) :
+        if not token_verify(access_token):
             return token_invalid()
 
         put_data = request.data

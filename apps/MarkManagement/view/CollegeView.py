@@ -50,7 +50,7 @@ class CollegeViewSet(viewsets.ViewSet):
             college_set = college_set.filter(university_id=university_id)
 
         # 对象取字典
-        #college_set = college_set.values()
+        # college_set = college_set.values()
         result = []
         for college in college_set:
             collegeDict = model_to_dict(college)
@@ -143,7 +143,7 @@ class CollegeViewSet(viewsets.ViewSet):
         if not token_verify(access_token):
             return token_invalid()
 
-        post_data =  request.data
+        post_data = request.data
         subjects = post_data.get('subjects')
 
         if subjects is None:
@@ -176,7 +176,7 @@ class CollegeViewSet(viewsets.ViewSet):
             except Exception as e:
                 continue
             else:
-                ids.append({'id':college.id})
+                ids.append({'id': college.id})
                 tag = True
 
         if tag:
@@ -199,7 +199,7 @@ class CollegeViewSet(viewsets.ViewSet):
         if not token_verify(access_token):
             return token_invalid()
 
-        put_data =  request.data
+        put_data = request.data
         subjects = put_data.get('subjects')
 
         if subjects is None:

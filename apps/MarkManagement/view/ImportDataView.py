@@ -11,6 +11,7 @@ insert: POST http://localhost:8000/api/v1/point/import_data
 
 from apps.MarkManagement.view.common import *
 
+
 class ImportDataViewSet(viewsets.ViewSet):
 
     def insert(self, request):

@@ -39,9 +39,9 @@ class TeacherViewSet(viewsets.ViewSet):
 
         if password is None or college_id is None or tid is None or name is None:
             return parameter_missed()
-        #college_set = College.objects.filter(id=college_id)
-        #if college_set.exists() == False:
-            #return JsonResponse({'code': '1022', 'message': status_code['4032']}, safe=False)
+        # college_set = College.objects.filter(id=college_id)
+        # if college_set.exists() == False:
+        # return JsonResponse({'code': '1022', 'message': status_code['4032']}, safe=False)
 
         teacher_set = Teacher.objects.filter(Q(tid=tid))
         if teacher_set.exists():

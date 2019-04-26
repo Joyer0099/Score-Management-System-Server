@@ -171,7 +171,7 @@ class LessonViewSet(viewsets.ViewSet):
                     lesson.college = college_set[0]
 
                 lesson.save()
-                ids.append({'id':lesson.id})
+                ids.append({'id': lesson.id})
                 tag = True
 
         if tag:
@@ -207,8 +207,8 @@ class LessonViewSet(viewsets.ViewSet):
 
         for subjectDict in subjects:
             id = subjectDict.get('id')
-            #name = subjectDict.get('name')
-            #college_id = subjectDict.get('college_id')
+            # name = subjectDict.get('name')
+            # college_id = subjectDict.get('college_id')
 
             if id is None:
                 continue

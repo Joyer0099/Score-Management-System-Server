@@ -189,7 +189,7 @@ class UniversityViewSet(viewsets.ViewSet):
 
         # 根据更新操作的成功与失败，返回对应JSON response
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
         else:
             return update_failed()
 
@@ -242,4 +242,3 @@ class UniversityViewSet(viewsets.ViewSet):
             return delete_succeed()
         else:
             return delete_failed()
-

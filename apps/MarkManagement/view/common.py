@@ -40,7 +40,7 @@ from MarkSystem.settings import DEBUG
 status_code = {}
 if DEBUG:
 
-        status_code = {
+    status_code = {
         # 2--- 表示成功
 
         '2000': 'OK, with Response',
@@ -84,7 +84,7 @@ if DEBUG:
         '5004': 'Gateway Forbidden',
         '5101': 'Server is updating',
         '5201': 'Service Stopped'
-        }
+    }
 else:
 
     status_code = {
@@ -161,6 +161,7 @@ else:
 
 current_semester = "2019年春季"
 
+
 def create_md5(pwd):
     """
     获取原始密码 + salt的md5值
@@ -197,12 +198,14 @@ def token_verify(access_token):
         return False
     return True
 
+
 def token_invalid():
     """
     'Error, Bad token' or '错误，无效的token'
     :return: JSON response，携带无效token对应的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4011', 'message': status_code['4011']})
+
 
 def manager_check_failed():
     """
@@ -211,12 +214,14 @@ def manager_check_failed():
     """
     return JsonResponse({'code': '4027', 'message': status_code['4027']}, safe=False)
 
+
 def parameter_missed():
     """
     'Error, Missing parameters' or '错误，参数缺失'
     :return: JSON response，携带参数缺失的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4032', 'message': status_code['4032']}, safe=False)
+
 
 def query_succeed():
     """
@@ -225,12 +230,14 @@ def query_succeed():
     """
     return JsonResponse({'code': '2000', 'message': status_code['2000']}, safe=False)
 
+
 def query_failed():
     """
     'Error, No Matching Query Data' or '错误，没有符合查询的数据'
     :return: JSON response，携带查询失败的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4036', 'message': status_code['4036']}, safe=False)
+
 
 def insert_succeed():
     """
@@ -239,12 +246,14 @@ def insert_succeed():
     """
     return JsonResponse({'code': '2001', 'message': status_code['2001']}, safe=False)
 
+
 def insert_failed():
     """
     'Error, Data Insert Failed' or '错误，数据插入失败'
     :return: JSON response，携带数据插入失败的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4037', 'message': status_code['4037']}, safe=False)
+
 
 def update_succeed():
     """
@@ -253,12 +262,14 @@ def update_succeed():
     """
     return JsonResponse({'code': '2005', 'message': status_code['2005']}, safe=False)
 
+
 def update_failed():
     """
     'Error, Data Update Failed' or '错误，数据更新失败'
     :return: JSON response，携带更新失败的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4038', 'message': status_code['4038']}, safe=False)
+
 
 def delete_succeed():
     """
@@ -274,4 +285,3 @@ def delete_failed():
     :return: JSON response，携带删除失败的状态码以及对应状态信息
     """
     return JsonResponse({'code': '4039', 'message': status_code['4039']}, safe=False)
-

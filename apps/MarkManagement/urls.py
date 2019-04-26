@@ -27,17 +27,17 @@ urlpath = [
                                                                          'post': 'insert',
                                                                          'put': 'update',
                                                                          'delete': 'remove'})),
-    #necessary
+    # necessary
     re_path(r'^table/class_info/detail/some', views.ClassInfoViewSet.as_view({'get': 'get_classInfo_full_message'})),
     re_path(r'^table/class_info/detail/all',
             views.ClassInfoViewSet.as_view({'get': 'get_classInfo_full_message_all'})),
 
     # teacher,目前等价于user
-    #re_path(r'^teacher/info/format$', views.TeacherViewSet.as_view({'get': 'query',
-     #                                                               'put': 'update'})),
+    # re_path(r'^teacher/info/format$', views.TeacherViewSet.as_view({'get': 'query',
+    #                                                               'put': 'update'})),
 
     # user
-    #necessary
+    # necessary
     re_path(r'^user/info/display', views.TeacherViewSet.as_view({'get': 'get_user_full_message'})),
 
     re_path(r'^user/info/format', views.TeacherViewSet.as_view({'get': 'query',
@@ -53,7 +53,7 @@ urlpath = [
                                                                       'put': 'update',
                                                                       'delete': 'remove'})),
     # student
-    #necessary
+    # necessary
     re_path(r'^student/display', views.StudentViewSet.as_view({'get': 'get_student_list'})),
 
     re_path(r'^student/format', views.StudentViewSet.as_view({'get': 'query',

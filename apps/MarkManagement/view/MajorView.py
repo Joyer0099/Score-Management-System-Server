@@ -117,11 +117,11 @@ class MajorViewSet(viewsets.ViewSet):
             except Exception as e:
                 continue
             else:
-                ids.append({'id':major.id})
+                ids.append({'id': major.id})
                 tag = True
 
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2001', 'message': status_code['2001']}, safe=False)
         else:
             return insert_failed()
 

@@ -237,7 +237,7 @@ class PointViewSet(viewsets.ViewSet):
                 succeed_ids.append({'id': point.id})
                 tag = True
             except Exception as e:
-                failed_message.append({'student_id':student_id,'title_id':title_id})
+                failed_message.append({'student_id': student_id, 'title_id': title_id})
                 continue
 
         subjects = {

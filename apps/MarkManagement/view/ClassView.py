@@ -40,10 +40,10 @@ class ClassViewSet(viewsets.ViewSet):
         for subjectsDict in subjects:
 
             id = subjectsDict.get('id')
-            #lesson_id = request.GET.get('lesson_id')
+            # lesson_id = request.GET.get('lesson_id')
             student_id = subjectsDict.get('student_id')
-            #sid = request.GET.get('sid')
-            #sname = request.GET.get('sname')
+            # sid = request.GET.get('sid')
+            # sname = request.GET.get('sname')
             classInfo_id = subjectsDict.get('classInfo_id')
 
             if id is None and student_id is None and classInfo_id is None:
@@ -90,10 +90,10 @@ class ClassViewSet(viewsets.ViewSet):
             return token_invalid()
 
         id = request.GET.get('id')
-        #lesson_id = request.GET.get('lesson_id')
+        # lesson_id = request.GET.get('lesson_id')
         student_id = request.GET.get('student_id')
-        #sid = request.GET.get('sid')
-        #sname = request.GET.get('sname')
+        # sid = request.GET.get('sid')
+        # sname = request.GET.get('sname')
         classInfo_id = request.GET.get('classInfo_id')
 
         if id is None and student_id is None and classInfo_id is None:
@@ -151,11 +151,11 @@ class ClassViewSet(viewsets.ViewSet):
         ids = []
 
         for subjectsDict in subjects:
-            #lesson_id = subjectsDict.get('lesson_id')
+            # lesson_id = subjectsDict.get('lesson_id')
             student_id = subjectsDict.get('student_id')
-            #sname = subjectsDict.get('sname')
-            #sid = subjectsDict.get('sid')
-            #index = subjectsDict.get('index')
+            # sname = subjectsDict.get('sname')
+            # sid = subjectsDict.get('sid')
+            # index = subjectsDict.get('index')
             classInfo_id = subjectsDict.get('classInfo_id')
 
             if student_id is None or classInfo_id is None:
@@ -164,9 +164,9 @@ class ClassViewSet(viewsets.ViewSet):
             new_class = Class()
             # if lesson_id:
             #    lesson_set = Lesson.objects.filter(id=lesson_id)
-             #   if lesson_set.exists() == False:
-              #      continue
-               # new_class.lesson = lesson_set[0]
+            #   if lesson_set.exists() == False:
+            #      continue
+            # new_class.lesson = lesson_set[0]
             if student_id:
                 student_set = Student.objects.filter(id=student_id)
                 if not student_set.exists():

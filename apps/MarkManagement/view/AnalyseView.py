@@ -75,10 +75,10 @@ class AnalyseViewSet(viewsets.ViewSet):
         if not id_list:
             return parameter_missed()
 
-        point_set = Point.objects.filter(student_id__in=id_list)\
+        point_set = Point.objects.filter(student_id__in=id_list) \
             .values('pointNumber', 'student__sid', 'title__name', 'title__titleGroup__name')
 
-        print('length of point_set=',len(point_set))
+        print('length of point_set=', len(point_set))
 
         temps = []
         dicts = {}
@@ -186,7 +186,7 @@ class AnalyseViewSet(viewsets.ViewSet):
         results = []
 
         # improve the performance
-        point_set = Point.objects.filter(classInfo__semester=semester)\
+        point_set = Point.objects.filter(classInfo__semester=semester) \
             .values('student', 'pointNumber', 'title__name', 'title__titleGroup__name')
 
         print('point_set length=', len(point_set))
