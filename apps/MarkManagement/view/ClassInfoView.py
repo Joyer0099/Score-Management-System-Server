@@ -258,12 +258,13 @@ class ClassInfoViewSet(viewsets.ViewSet):
         insertID = []
 
         for subjectsDict in subjects:
-            name = subjectsDict.get('name',None)
-            teacher_id = subjectsDict.get('teacher_id',None)
+            name = subjectsDict.get('name', None)
+            teacher_id = subjectsDict.get('teacher_id', None)
             semester = subjectsDict.get('semester', None)
-            week = subjectsDict.get('week',None)
-            room = subjectsDict.get('room',None)
-            lesson_id = subjectsDict.get('lesson_id',None)
+            week = subjectsDict.get('week', None)
+            room = subjectsDict.get('room', None)
+            lesson_id = subjectsDict.get('lesson_id', None)
+            cid = subjectsDict.get('cid', None)
 
             if name is None or teacher_id is None or lesson_id is None:
                 continue
@@ -281,6 +282,8 @@ class ClassInfoViewSet(viewsets.ViewSet):
                 classInfo.week = week
             if room is not None:
                 classInfo.room = room
+            if cid is not None:
+                classInfo.cid = cid
 
             try:
                 classInfo.save()
@@ -331,8 +334,10 @@ class ClassInfoViewSet(viewsets.ViewSet):
             semester = subjectDict.get('semester')
             week = subjectDict.get('week')
             room = subjectDict.get('room')
+            cid = subjectDict.get('cid')
 
-            if id is None and name is None and teacher_id is None and semester is None and week is None:
+            if id is None and name is None and teacher_id is None \
+                    and semester is None and week is None and cid is None:
                 continue
 
             classInfo_set = ClassInfo.objects.filter(id=id)
@@ -349,6 +354,8 @@ class ClassInfoViewSet(viewsets.ViewSet):
                     classInfo.week = week
                 if room:
                     classInfo.room = room
+                if cid:
+                    classInfo.cid = cid
 
                 try:
                     classInfo.save()
