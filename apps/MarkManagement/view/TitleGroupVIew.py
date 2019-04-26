@@ -12,6 +12,7 @@ remove: DELETE http://localhost:8000/api/v1/titleGroup/format
 """
 from apps.MarkManagement.view.common import *
 
+
 class TitleGroupViewSet(viewsets.ViewSet):
 
     def query(self, request):

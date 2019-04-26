@@ -98,81 +98,78 @@ class AnalysisViewSet(viewsets.ViewSet):
             dicts = {}
             results = []
 
-            classInfo_set = ClassInfo.objects.filter(semester=semester)
+            # improve the performance
+            point_set = Point.objects.filter(classInfo__semester=semester) \
+                .values('student', 'pointNumber', 'title__name', 'title__titleGroup__name')
 
-            classInfo_id_set = []
-            for classInfo in classInfo_set:
-                classInfo_dict = model_to_dict(classInfo)
-                classInfo_id_set.append(classInfo_dict['id'])
-
-            point_set = Point.objects.filter(classInfo_id__in=classInfo_set)
+            print('point_set length=', len(point_set))
 
             for point in point_set:
-                point_dict = model_to_dict(point)
-                title_dict = model_to_dict(point.title)
-                titleGroup_dict = model_to_dict(point.title.titleGroup)
-                # point_dict['title'] = title_dict
-                # point_dict['titleGroup'] = titleGroup_dict
-                point_dict['titleName'] = title_dict['name']
-                point_dict['titleGroupName'] = titleGroup_dict['name']
+                if point['title__titleGroup__name'] == '期中客观分':
+                    if point['title__name'] == '期中词汇':
+                        point['vocabulary'] = point['pointNumber']
+                    if point['title__name'] == '期中听力':
+                        point['hearing'] = point['pointNumber']
+                    if point['title__name'] == '期中翻译':
+                        point['translate'] = point['pointNumber']
+                    if point['title__name'] == '期中写作':
+                        point['writing'] = point['pointNumber']
+                    if point['title__name'] == '期中细节':
+                        point['details'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期中主观分':
+                    point['subjective_qz'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期末客观分':
+                    point['objective_qm'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期末主观分':
+                    point['subjective_qm'] = point['pointNumber']
 
-                # TODO: Maybe the score's calculation is not correct.
-                point_dict['score'] = point_dict['pointNumber']
+                elif point['title__titleGroup__name'] in ['学位主观分', '学位客观分']:
+                    point['xuewei'] = point['pointNumber']
 
-                del point_dict['id']
-                del point_dict['classInfo']
-                del point_dict['title']
-                del point_dict['pointNumber']
-                del point_dict['note']
-
-                if '期中' in point_dict['titleGroupName']:
-                    if '词汇' in point_dict['titleName']:
-                        point_dict['vocabulary'] = point_dict['score']
-                    elif '听力' in point_dict['titleName']:
-                        point_dict['hearing'] = point_dict['score']
-                    elif '翻译' in point_dict['titleName']:
-                        point_dict['translate'] = point_dict['score']
-                    elif '写作' in point_dict['titleName']:
-                        point_dict['writing'] = point_dict['score']
-                    elif '细节' in point_dict['titleName']:
-                        point_dict['details'] = point_dict['score']
-                    elif '主观' in point_dict['titleName']:
-                        point_dict['subjective_qz'] = point_dict['score']
-                    else:
-                        continue
-
-                if '期末' in point_dict['titleGroupName']:
-                    if '主观' in point_dict['titleName']:
-                        point_dict['subjective_qm'] = point_dict['score']
-                    elif '客观' in point_dict['titleName']:
-                        point_dict['objective_qm'] = point_dict['score']
-                    else:
-                        continue
-
-                elif '学位英语成绩' in point_dict['titleGroupName']:
-                    point_dict['xuewei'] = point_dict['score']
-
-                del point_dict['titleGroupName']
-                del point_dict['titleName']
-                del point_dict['score']
-
-                temps.append(point_dict)
+                del point['pointNumber']
+                del point['title__titleGroup__name']
+                del point['title__name']
+                temps.append(point)
 
             for temp in temps:
                 if temp['student'] in dicts:
-                    dicts[temp['student']].update(temp)
-
+                    if 'xuewei' in dicts[temp['student']] and 'xuewei' in temp:
+                        dicts[temp['student']]['xuewei'] += temp['xuewei']
+                    else:
+                        dicts[temp['student']].update(temp)
                 else:
                     dicts[temp['student']] = temp
 
             for value in dicts.values():
-                del value['student']
-                results.append(value)
+                if value != {}:
+                    if 'vocabulary' not in value:
+                        value['vocabulary'] = 0
+                    if 'hearing' not in value:
+                        value['hearing'] = 0
+                    if 'translate' not in value:
+                        value['translate'] = 0
+                    if 'writing' not in value:
+                        value['writing'] = 0
+                    if 'details' not in value:
+                        value['details'] = 0
+                    if 'subjective_qz' not in value:
+                        value['subjective_qz'] = 0
+                    if 'objective_qm' not in value:
+                        value['objective_qm'] = 0
+                    if 'subjective_qm' not in value:
+                        value['subjective_qm'] = 0
+                    if 'xuewei' not in value:
+                        value['xuewei'] = 0
+
+                    results.append(value)
+
+            for result in results:
+                del result['student']
 
             return results
 
         # 从前端读到数据
-        semester = request.data['semester']
+        semester = request.GET.get('semester')
         scoresListMap = getAllScores(semester)
 
         vocabulary = []

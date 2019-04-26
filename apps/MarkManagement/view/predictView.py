@@ -41,75 +41,87 @@ class PredictViewSet(viewsets.ViewSet):
                         'score_ms':57,        //期末总分
                         }
             """
-            point_set = Point.objects.filter(student_id__in=id_list)
 
+            point_set = Point.objects.filter(student_id__in=id_list) \
+                .values('pointNumber', 'student__sid', 'title__name', 'title__titleGroup__name')
+
+            print('length of point_set=', len(point_set))
+
+            temps = []
+            dicts = {}
             results = []
 
             for point in point_set:
-                point_dict = model_to_dict(point)
-                point_dict['classInfo_id'] = point_dict['classInfo']
+                point['sid'] = point['student__sid']
+                if point['title__titleGroup__name'] == '期中客观分':
+                    point['score_zk'] = point['pointNumber']
+                    if point['title__name'] == '期中词汇':
+                        point['vocabulary'] = point['pointNumber']
+                    if point['title__name'] == '期中听力':
+                        point['hearing'] = point['pointNumber']
+                    if point['title__name'] == '期中翻译':
+                        point['translate'] = point['pointNumber']
+                    if point['title__name'] == '期中写作':
+                        point['writing'] = point['pointNumber']
+                    if point['title__name'] == '期中细节':
+                        point['details'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期中主观分':
+                    point['score_zs'] = point['pointNumber']
+                    point['score_zz'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期末客观分':
+                    point['score_ms'] = point['pointNumber']
+                    point['score_mk'] = point['pointNumber']
+                if point['title__titleGroup__name'] == '期末主观分':
+                    point['score_ms'] = point['pointNumber']
+                    point['score_mz'] = point['pointNumber']
 
-                student_dict = model_to_dict(point.student)
-                point_dict['sid'] = student_dict['sid']
-                point_dict['syear'] = student_dict['year']
+                del point['pointNumber']
+                del point['student__sid']
+                del point['title__name']
+                del point['title__titleGroup__name']
+                temps.append(point)
 
-                title_dict = model_to_dict(point.title)
-                point_dict['title_name'] = title_dict['name']
-                point_dict['title_weight'] = title_dict['weight']
+            for temp in temps:
+                if temp['sid'] in dicts:
+                    if 'score_zk' in dicts[temp['sid']] and 'score_zk' in temp:
+                        dicts[temp['sid']]['score_zk'] += temp['score_zk']
+                        del temp['score_zk']
+                    elif 'score_zs' in dicts[temp['sid']] and 'score_zs' in temp:
+                        dicts[temp['sid']]['score_zs'] += temp['score_zs']
+                        del temp['score_zs']
+                    elif 'score_ms' in dicts[temp['sid']] and 'score_ms' in temp:
+                        dicts[temp['sid']]['score_ms'] += temp['score_ms']
+                        del temp['score_ms']
+                    dicts[temp['sid']].update(temp)
+                else:
+                    dicts[temp['sid']] = temp
 
-                titleGroup_dict = model_to_dict(point.title.titleGroup)
-                point_dict['titleGroup_name'] = titleGroup_dict['name']
-                point_dict['titleGroup_weight'] = titleGroup_dict['weight']
+            for value in dicts.values():
+                if value != {}:
+                    if 'score_zk' not in value:
+                        value['score_zk'] = 0
+                    if 'score_zz' not in value:
+                        value['score_zz'] = 0
+                    if 'score_zs' not in value:
+                        value['score_zs'] = 0
+                    if 'score_mk' not in value:
+                        value['score_mk'] = 0
+                    if 'score_mz' not in value:
+                        value['score_mz'] = 0
+                    if 'score_ms' not in value:
+                        value['score_ms'] = 0
+                    if 'vocabulary' not in value:
+                        value['vocabulary'] = 0
+                    if 'hearing' not in value:
+                        value['hearing'] = 0
+                    if 'translate' not in value:
+                        value['translate'] = 0
+                    if 'writing' not in value:
+                        value['writing'] = 0
+                    if 'details' not in value:
+                        value['details'] = 0
 
-                classInfo_dict = model_to_dict(point.classInfo)
-                point_dict['semester'] = classInfo_dict['semester']
-
-                # TODO: the caculation of score maybe wrong
-                point_dict['score'] = point_dict['pointNumber']
-
-                del point_dict['student']
-                del point_dict['id']
-                del point_dict['title']
-                del point_dict['classInfo']
-                del point_dict['note']
-                del point_dict['classInfo_id']
-                del point_dict['pointNumber']
-                del point_dict['title_weight']
-                del point_dict['titleGroup_weight']
-
-                results.append(point_dict)
-
-            for result in results:
-                if result['titleGroup_name'] == '期中成绩':
-                    if result['title_name'] == '客观分':
-                        result['score_zk'] = result['score']
-                    elif result['title_name'] == '主观分':
-                        result['score_zz'] = result['score']
-                elif result['titleGroup_name'] == '期末成绩':
-                    if result['title_name'] == '客观分':
-                        result['score_mk'] = result['score']
-                    elif result['title_name'] == '主观分':
-                        result['score_mz'] = result['score']
-                del result['title_name']
-                del result['titleGroup_name']
-                del result['score']
-
-            dicts = {}
-
-            for result in results:
-                if result['syear'] in result['semester'] and '秋季' in result['semester']:
-                    if not (result['sid'] in dicts):
-                        dicts[result['sid']] = result
-                    else:
-                        dicts[result['sid']] = dict(dicts[result['sid']], **result)
-                    del dicts[result['sid']]['syear']
-                    del dicts[result['sid']]['semester']
-
-            results = [d for d in dicts.values()]
-
-            for result in results:
-                result['score_zs'] = result.setdefault('score_zz', 0) + result.setdefault('score_zk', 0)
-                result['score_ms'] = result.setdefault('score_mz', 0) + result.setdefault('score_mk', 0)
+                    results.append(value)
 
             return results
 
@@ -175,17 +187,23 @@ class PredictViewSet(viewsets.ViewSet):
         # 获得要预测的学生的sidlist
         sidList = []
         # 从前端读到数据
-        sidList = request.data['sidList']['param']
+        # print(type(request.data))
+        # print(request.data)
+        sidList = request.data.get('idList')
+        print('sidList=', sidList)
+        # request.data['sidList']['param']
 
         # 获得学生姓名列表
         nameList = []
         nameList = getNameListBySidList(sidList)
+        print('nameList=', nameList)
 
         # 根据sidList获得入学第一学年秋季的期中客观分、期中主观分、期中总分、期末客观分、期末主观分和期末总分
         dataset = getScoreListMapBySidList(sidList)
 
         # 转换数据格式
         dataset = DataFrame(dataset)
+        print("dataset=", dataset)
 
         sidList = list(dataset['sid'])
         dataset.drop('sid', axis=1, inplace=True)
