@@ -51,7 +51,7 @@ class PredictViewSet(viewsets.ViewSet):
             point_set = Point.objects.filter(student_id__in=id_list) \
                 .values('pointNumber', 'student__sid', 'title__name', 'title__titleGroup__name')
 
-            print('length of point_set=', len(point_set))
+            # print('length of point_set=', len(point_set))
 
             temps = []
             dicts = {}
@@ -137,7 +137,7 @@ class PredictViewSet(viewsets.ViewSet):
             :param id_list:
             :return:
             """
-            print("idList=", id_list)
+            # print("idList=", id_list)
 
             student_set = Student.objects.filter(id__in=id_list)
 
@@ -195,14 +195,14 @@ class PredictViewSet(viewsets.ViewSet):
         # 获得要预测的学生的sidlist
         sidList = []
         # 从前端读到数据
-        print(type(request.data))
-        print(request.data)
+        # print(type(request.data))
+        # print(request.data)
         start=time.time()
         # sidList = request.data['sidList']
         sidList =request.data['sidList']
         # sidList = request.data.get('idList')
         end = time.time()
-        print("从前台读取数据花费时间=", end-start)
+        # print("从前台读取数据花费时间=", end-start)
         # print('sidList=', sidList)
         # request.data['sidList']['param']
 
@@ -211,18 +211,18 @@ class PredictViewSet(viewsets.ViewSet):
         start = time.time()
         nameList = getNameListBySidList(sidList)
         end = time.time()
-        print("获得学生姓名列表花费时间=", end - start)
+        # print("获得学生姓名列表花费时间=", end - start)
         # print('nameList=', nameList)
 
         # 根据sidList获得入学第一学年秋季的期中客观分、期中主观分、期中总分、期末客观分、期末主观分和期末总分
         start = time.time()
         dataset = getScoreListMapBySidList(sidList)
         end = time.time()
-        print("取各项分数花费时间=", end - start)
+        # print("取各项分数花费时间=", end - start)
 
         # 转换数据格式
         dataset = DataFrame(dataset)
-        print("dataset=", dataset)
+        # print("dataset=", dataset)
 
         sidList = list(dataset['sid'])
         dataset.drop('sid', axis=1, inplace=True)
@@ -248,17 +248,17 @@ class PredictViewSet(viewsets.ViewSet):
         start = time.time()
         annpre = annpredict("./apps/static/model/Weights-2955--5.23046.hdf5", dataset, 11)
         annpre = list(annpre.reshape((1, annpre.shape[0]))[0])
-        print("annpre=", annpre)
+        # print("annpre=", annpre)
         # xgb预测结果
         xgbpre = list(xgbpredict("./apps/static/model/xgboost.model", dataset))
-        print("xgbpre=", xgbpre)
+        # print("xgbpre=", xgbpre)
         c = {"annpre": annpre, "xgbpre": xgbpre}
         dataset = DataFrame(c)
         # 融合模型预测结果
         preds = xgbpredict("./apps/static/model/xgb_impro.model", dataset)
-        print("preds=", preds)
+        # print("preds=", preds)
         end = time.time()
-        print("预测花费时间=", end - start)
+        # print("预测花费时间=", end - start)
 
         # *********************v2_新增2_end *********************#
 
@@ -327,7 +327,7 @@ class PredictViewSet(viewsets.ViewSet):
             return JsonResponse({'code': code_number, 'message': status_code[code_number]}, safe=False)
         code_number = '2000'
         # 返回结果
-        print("predictListMap=",predictListMap)
+        # print("predictListMap=",predictListMap)
         result = {
             'code': code_number,
             'message': status_code[code_number],
