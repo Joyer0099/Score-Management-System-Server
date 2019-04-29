@@ -208,7 +208,7 @@ class TeacherManageViewSet(viewsets.ViewSet):
                     teacher.email = email
                 if name:
                     teacher.name = name
-                if is_manager:
+                if is_manager is not None:
                     teacher.is_manager = is_manager
                 if college_id:
                     college_set = College.objects.filter(id=college_id)
