@@ -65,7 +65,7 @@ class ImportDataViewSet(viewsets.ViewSet):
                     Q(name=title_name) & Q(titleGroup_id=titleGroup_id) & Q(classInfo_id=classInfo_id))
                 if title_set.exists():
                     exist_title_message.append({'name': title_set[0].name})
-                    print("already exists")
+                    # print("already exists")
                     continue
                 new_title = Title()
                 new_title.name = title_name
@@ -88,7 +88,7 @@ class ImportDataViewSet(viewsets.ViewSet):
                     titleDict['classInfo_message'] = classInfo_dict
 
                     succeed_title_message.append(titleDict)
-                    print(new_title.id)
+                    # print(new_title.id)
                 except Exception as e:
                     error_title_message.append({'name': title_name})
 
@@ -124,7 +124,7 @@ class ImportDataViewSet(viewsets.ViewSet):
                 point = point_set[0]
                 point.pointNumber = pointNumber
                 point.save()
-                print(point.id)
+                # print(point.id)
                 exist_point_message.append(point_message)
                 continue
 

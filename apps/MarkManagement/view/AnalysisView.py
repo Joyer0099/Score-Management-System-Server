@@ -102,7 +102,7 @@ class AnalysisViewSet(viewsets.ViewSet):
             point_set = Point.objects.filter(classInfo__semester=semester) \
                 .values('student', 'pointNumber', 'title__name', 'title__titleGroup__name')
 
-            print('point_set length=', len(point_set))
+            # print('point_set length=', len(point_set))
 
             for point in point_set:
                 if point['title__titleGroup__name'] == '期中客观分':
