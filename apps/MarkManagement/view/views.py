@@ -15,5 +15,5 @@ from apps.MarkManagement.view.TitleView import *
 from apps.MarkManagement.view.UniversityView import *
 from apps.MarkManagement.view.ImportDataView import *
 from apps.MarkManagement.view.AnalyseView import *
-from apps.MarkManagement.view.predictView import *
+from apps.MarkManagement.view.PredictView import *
 from apps.MarkManagement.view.AnalysisView import *

@@ -170,7 +170,7 @@ class TitleGroupViewSet(viewsets.ViewSet):
                     continue
 
         if tag:
-            return JsonResponse({'subjects':ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
+            return JsonResponse({'subjects': ids, 'code': '2005', 'message': status_code['2005']}, safe=False)
         else:
             return update_failed()
 
