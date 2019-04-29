@@ -169,11 +169,11 @@ class AnalysisViewSet(viewsets.ViewSet):
             return results
 
         # 从前端读到数据
-        print("request.data=", request.data)
+        # print("request.data=", request.data)
         # semester = request.GET.get('semester')
         semester = request.data['semester']
 
-        print("semester=", semester)
+        # print("semester=", semester)
         scoresListMap = getAllScores(semester)
 
         vocabulary = []
@@ -224,7 +224,8 @@ class AnalysisViewSet(viewsets.ViewSet):
             '细节': details,
             '期中': subjective_qz,
             '期末客观': objective_qm,
-            '期末主观': subjective_qm
+            '期末主观': subjective_qm,
+            'Test1': 0.21
         }
 
         # 如果没有结果返回
@@ -240,5 +241,5 @@ class AnalysisViewSet(viewsets.ViewSet):
             'message': status_code[code_number],
             'subjects': resultMap,
         }
-        print(result)
+        # print(result)
         return JsonResponse(result, safe=False)
