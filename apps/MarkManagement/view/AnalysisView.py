@@ -169,7 +169,11 @@ class AnalysisViewSet(viewsets.ViewSet):
             return results
 
         # 从前端读到数据
-        semester = request.GET.get('semester')
+        print("request.data=", request.data)
+        # semester = request.GET.get('semester')
+        semester = request.data['semester']
+
+        print("semester=", semester)
         scoresListMap = getAllScores(semester)
 
         vocabulary = []
@@ -192,24 +196,35 @@ class AnalysisViewSet(viewsets.ViewSet):
             subjective_qm.append(scoresListMap[i]['subjective_qm'])
             xuewei.append(scoresListMap[i]['xuewei'])
 
-        vocabulary = round(coef_Pearson(vocabulary, xuewei), 6)
-        hearing = round(coef_Pearson(hearing, xuewei), 6)
-        translate = round(coef_Pearson(translate, xuewei), 6)
-        writing = round(coef_Pearson(writing, xuewei), 6)
-        details = round(coef_Pearson(details, xuewei), 6)
-        subjective_qz = round(coef_Pearson(subjective_qz, xuewei), 6)
-        objective_qm = round(coef_Pearson(objective_qm, xuewei), 6)
-        subjective_qm = round(coef_Pearson(subjective_qm, xuewei), 6)
+        vocabulary = round(gainRate_ent(vocabulary, xuewei), 6)
+        hearing = round(gainRate_ent(hearing, xuewei), 6)
+        translate = round(gainRate_ent(translate, xuewei), 6)
+        writing = round(gainRate_ent(writing, xuewei), 6)
+        details = round(gainRate_ent(details, xuewei), 6)
+        subjective_qz = round(gainRate_ent(subjective_qz, xuewei), 6)
+        objective_qm = round(gainRate_ent(objective_qm, xuewei), 6)
+        subjective_qm = round(gainRate_ent(subjective_qm, xuewei), 6)
 
+
+        # resultMap = {
+        #     'vocabulary': vocabulary,
+        #     'hearing': hearing,
+        #     'translate': translate,
+        #     'writing': writing,
+        #     'details': details,
+        #     'subjective_qz': subjective_qz,
+        #     'objective_qm': objective_qm,
+        #     'subjective_qm': subjective_qm
+        # }
         resultMap = {
-            'vocabulary': vocabulary,
-            'hearing': hearing,
-            'translate': translate,
-            'writing': writing,
-            'details': details,
-            'subjective_qz': subjective_qz,
-            'objective_qm': objective_qm,
-            'subjective_qm': subjective_qm
+            '单词': vocabulary,
+            '听力': hearing,
+            '翻译': translate,
+            '写作': writing,
+            '细节': details,
+            '期中': subjective_qz,
+            '期末客观': objective_qm,
+            '期末主观': subjective_qm
         }
 
         # 如果没有结果返回

@@ -111,5 +111,5 @@ urlpath = [
     re_path(r'^analysis/pass', views.PredictViewSet.as_view({'post': 'predictScore'})),
 
     # 课程分析
-    re_path(r'^analysis/class', views.AnalysisViewSet.as_view({'get': 'Analysisfun'}))
+    re_path(r'^analysis/class', views.AnalysisViewSet.as_view({'post': 'Analysisfun'}))
 ]
