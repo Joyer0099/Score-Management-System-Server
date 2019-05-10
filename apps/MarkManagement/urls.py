@@ -93,7 +93,7 @@ urlpath = [
                                                           'put': 'update',
                                                           'delete': 'remove'})),
     # title_group
-    re_path(r'^titleGroup/format', views.TitleGroupViewSet.as_view({'get': 'query',
+    re_path(r'^title_group/format', views.TitleGroupViewSet.as_view({'get': 'query',
                                                                     'post': 'insert',
                                                                     'put': 'update',
                                                                     'delete': 'remove'})),
