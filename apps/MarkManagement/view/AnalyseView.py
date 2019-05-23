@@ -3,9 +3,7 @@
 
 """
 This file is for the data analysis of student's scores
-               AnalysisFun: The main analyse function.
-                            POSTpip http://localhost:8000/api/v1/analysis
-            AnalyseViewSet: According student's id list to get the student's name
+      getNameListBySidList: According student's id list to get the student's name
                             GET http://localhost:8000/api/v1/analysis/student/name
   getScoreListMapBySidList: According student's id list to get a map including
                             学号，期中客观分，期中主观分，期中总分，期末客观分，期末主观分，期末总分

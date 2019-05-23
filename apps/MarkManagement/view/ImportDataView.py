@@ -16,7 +16,7 @@ class ImportDataViewSet(viewsets.ViewSet):
 
     def insert(self, request):
         """
-        Insert the import data from the browser into database.
+        插入新的分数详细信息
         :param request: the request from browser. 用来获取access_token和插入内容
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response

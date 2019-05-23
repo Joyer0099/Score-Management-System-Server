@@ -18,7 +18,7 @@ class LessonViewSet(viewsets.ViewSet):
 
     def query(self, request):
         """
-        查询课程组 (如「英语听说课」)
+        获取符合参数条件的已有课程组信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -75,7 +75,7 @@ class LessonViewSet(viewsets.ViewSet):
 
     def insert(self, request):
         """
-        添加新课程组
+        插入新的课程组信息
         :param request: the request from browser. 用来获取access_token和插入参数
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -132,7 +132,7 @@ class LessonViewSet(viewsets.ViewSet):
 
     def update(self, request):
         """
-        更改课程组
+        更新已有课程组信息
         :param request: the request from browser. 用来获取access_token和更新条件
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -184,7 +184,7 @@ class LessonViewSet(viewsets.ViewSet):
 
     def remove(self, request):
         """
-        删除课程组
+        删除符合参数条件的已有课程组信息
         :param request: the request from browser. 用来获取access_token和删除条件
         :return: JSON response. 包括code, message
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response

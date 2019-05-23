@@ -19,7 +19,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def get_classInfo_full_message_all(self, request):
         """
-        管理员获取到所有课程信息
+        管理员获取符合参数条件的已有课程信息
         :param request: the request from browser. 用来获取access_token
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -80,7 +80,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def get_classInfo_full_message(self, request):
         """
-        任课教师获取到个人课程信息
+        任课教师获取符合参数条件的已有课程信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -164,7 +164,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def query(self, request):
         """
-        Query t_ClassInfo table
+        获取符合参数条件的已有课程信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -233,7 +233,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def insert(self, request):
         """
-        Insert t_ClassInfo table
+        插入新的课程信息
         :param request: the request from browser. 用来获取access_token和插入参数
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -303,7 +303,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def update(self, request):
         """
-        Update t_ClassInfo table
+        更新已有课程信息
         :param request: the request from browser. 用来获取access_token和更新条件
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -373,7 +373,7 @@ class ClassInfoViewSet(viewsets.ViewSet):
 
     def remove(self, request):
         """
-        Remove t_ClassInfo table
+        删除符合参数条件的已有课程信息
         :param request: the request from browser. 用来获取access_token和删除条件
         :return: JSON response. 包括code, message
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response

@@ -20,7 +20,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def logon(self, request):
         """
-        Log on
+        注册
         :param request: the request from browser. 用来获取注册信息
         :return: JSON response. 包括code, message
                 1、如果必填注册信息有空，返回parameter_missed的JSON response
@@ -65,7 +65,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def login(self, request):
         """
-        Log in
+        登陆
         :param request: the request from browser. 用来获取登陆信息
         :return: JSON response. 包括code, message, subjects(opt)
                 1、如果有参数为空，返回parameter_missed的JSON response
@@ -101,7 +101,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def logout(self, request):
         """
-        Log out
+        登出
         :param request: the request from browser. 用来获取token
         :return: JSON response. 包括code, message
                 1、登出之后，尝试删除token
@@ -120,7 +120,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def query(self, request):
         """
-        Query t_Teacher table
+        获取教师个人信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -184,7 +184,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def get_user_full_message(self, request):
         """
-        Get user's message including t_Teacher, t_College, t_University table
+        获取符合参数调节的已有教师详细信息（包括学校、学院信息）
         :param request: the request from browser.
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -259,7 +259,7 @@ class TeacherViewSet(viewsets.ViewSet):
 
     def change_own_info(self, request):
         """
-        Update t_Teacher table
+        更改教师个人信息
         :param request: the request from browser. 用来获取access_token和更新条件
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response

@@ -18,7 +18,7 @@ class CollegeViewSet(viewsets.ViewSet):
 
     def get_college_list(self, request):
         """
-        Get t_College join t_University table list
+        获取符合参数条件的已有学院相关信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                 1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -78,7 +78,7 @@ class CollegeViewSet(viewsets.ViewSet):
 
     def query(self, request):
         """
-        Query t_College table
+        获取符合参数的已有学院信息
         :param request: the request from browser. 用来获取access_token和查询条件
         :return: JSON response. 包括code, message, subjects(opt), count(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -130,7 +130,7 @@ class CollegeViewSet(viewsets.ViewSet):
 
     def insert(self, request):
         """
-        Insert data into t_College table
+        插入新的学院信息
         :param request: the request from browser. 用来获取access_token和插入参数
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -186,7 +186,7 @@ class CollegeViewSet(viewsets.ViewSet):
 
     def update(self, request):
         """
-        Update t_College table
+        更新已有学院信息
         :param request: the request from browser. 用来获取access_token和更新条件
         :return: JSON response. 包括code, message, subjects(opt)
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
@@ -243,7 +243,7 @@ class CollegeViewSet(viewsets.ViewSet):
 
     def remove(self, request):
         """
-        Remove data from t_College table
+        删除符合参数条件的已有学院信息
         :param request: the request from browser. 用来获取access_token和删除条件
         :return: JSON response. 包括code, message
                  1、如果token无效，即token不存在于数据库中，返回token_invalid的JSON response
